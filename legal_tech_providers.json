@@ -1,0 +1,29 @@
+[
+    {
+      "id": 1,
+      "name": "LegalDocs Pro",
+      "description": "Automated document generation for contracts and legal forms.",
+      "categories": ["Document Automation"],
+      "jurisdictions": ["US", "CA"],
+      "price_tier": 2,
+      "website": "https://example.com/legaldocspro"
+    },
+    {
+      "id": 2,
+      "name": "ContractAI",
+      "description": "AI-powered contract analysis and management platform.",
+      "categories": ["Contract Management"],
+      "jurisdictions": ["US", "UK", "EU"],
+      "price_tier": 3,
+      "website": "https://example.com/contractai"
+    },
+    {
+      "id": 3,
+      "name": "CaseBuddy",
+      "description": "Complete practice management solution for small law firms.",
+      "categories": ["Practice Management"],
+      "jurisdictions": ["US"],
+      "price_tier": 1,
+      "website": "https://example.com/casebuddy"
+    }
+  ]

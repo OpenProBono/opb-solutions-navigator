@@ -1,0 +1,303 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Tech Directory</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .chat-message {
+            margin: 10px;
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 80%;
+        }
+        .user-message {
+            background-color: #e9ecef;
+            margin-left: auto;
+        }
+        .assistant-message {
+            background-color: #f0f7ff;
+            margin-right: auto;
+        }
+        .search-container {
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .filter-badge {
+            cursor: pointer;
+        }
+        .provider-card {
+            transition: transform 0.2s;
+        }
+        .provider-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-4">
+        <div class="row mb-4">
+            <div class="col">
+                <h1 class="text-center">Legal Tech Directory Assistant</h1>
+                <p class="text-center text-muted">Find the right legal technology solution for your needs</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Chat Interface (Left/Top) -->
+            <div class="col-lg-7 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-chat-dots"></i> Chat with our AI Assistant</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="chat-container" class="chat-container p-3">
+                            <div class="assistant-message chat-message">
+                                <p class="mb-0">Hello! I'm your legal tech directory assistant. I can help you find the right legal technology solutions based on your needs. What type of legal issue are you trying to solve?</p>
+                            </div>
+                        </div>
+                        <div class="p-3 border-top">
+                            <div class="d-flex">
+                                <input type="text" id="user-input" class="form-control me-2" placeholder="Type your message...">
+                                <button id="send-button" class="btn btn-primary">
+                                    <i class="bi bi-send"></i>
+                                </button>
+                            </div>
+                            <div id="suggested-filters" class="mt-2">
+                                <span class="badge bg-light text-dark border me-1 filter-badge">jurisdiction:US</span>
+                                <span class="badge bg-light text-dark border me-1 filter-badge">budget:affordable</span>
+                                <span class="badge bg-light text-dark border me-1 filter-badge">type:contract-management</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search Interface (Right/Bottom) -->
+            <div class="col-lg-5 mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0"><i class="bi bi-search"></i> Search & Filter</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-group mb-3">
+                            <input type="text" id="search-input" class="form-control" placeholder="Search by name or keyword...">
+                            <button id="search-button" class="btn btn-outline-secondary">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Jurisdiction</label>
+                            <select id="jurisdiction-filter" class="form-select">
+                                <option value="">All Jurisdictions</option>
+                                <option value="US">United States</option>
+                                <option value="UK">United Kingdom</option>
+                                <option value="EU">European Union</option>
+                                <option value="CA">Canada</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <select id="category-filter" class="form-select">
+                                <option value="">All Categories</option>
+                                <option value="Document Automation">Document Automation</option>
+                                <option value="E-Discovery">E-Discovery</option>
+                                <option value="Practice Management">Practice Management</option>
+                                <option value="Contract Management">Contract Management</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Price Tier</label>
+                            <select id="price-filter" class="form-select">
+                                <option value="">Any Price</option>
+                                <option value="1">$ - Budget</option>
+                                <option value="2">$$ - Mid-range</option>
+                                <option value="3">$$$ - Premium</option>
+                            </select>
+                        </div>
+                        
+                        <button id="apply-filters" class="btn btn-primary w-100">Apply Filters</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Section -->
+        <div class="row" id="results-container">
+            <div class="col-12 mb-3">
+                <h3>Recommended Solutions <span id="result-count" class="badge bg-secondary">3</span></h3>
+            </div>
+            
+            <!-- Sample Result Cards (these would be dynamically generated) -->
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 provider-card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">LegalDocs Pro</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Document Automation</h6>
+                        <p class="card-text">Automated document generation for contracts and legal forms.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-info">US, CA</span>
+                            <span class="text-success">$$</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <button class="btn btn-sm btn-outline-primary w-100">View Details</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 provider-card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">ContractAI</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Contract Management</h6>
+                        <p class="card-text">AI-powered contract analysis and management platform.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-info">US, UK, EU</span>
+                            <span class="text-success">$$$</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <button class="btn btn-sm btn-outline-primary w-100">View Details</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 provider-card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">CaseBuddy</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Practice Management</h6>
+                        <p class="card-text">Complete practice management solution for small law firms.</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-info">US</span>
+                            <span class="text-success">$</span>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <button class="btn btn-sm btn-outline-primary w-100">View Details</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatContainer = document.getElementById('chat-container');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            const suggestedFilters = document.getElementById('suggested-filters');
+            
+            // Handle sending chat messages
+            function sendMessage() {
+                const message = userInput.value.trim();
+                if (message === '') return;
+                
+                // Add user message to chat
+                const userMessageDiv = document.createElement('div');
+                userMessageDiv.className = 'user-message chat-message';
+                userMessageDiv.innerHTML = `<p class="mb-0">${message}</p>`;
+                chatContainer.appendChild(userMessageDiv);
+                
+                // Clear input
+                userInput.value = '';
+                
+                // Scroll to bottom of chat
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                
+                // Send to backend (in a real app)
+                fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Add assistant response
+                    const assistantMessageDiv = document.createElement('div');
+                    assistantMessageDiv.className = 'assistant-message chat-message';
+                    assistantMessageDiv.innerHTML = `<p class="mb-0">${data.message}</p>`;
+                    chatContainer.appendChild(assistantMessageDiv);
+                    
+                    // Update suggested filters (if provided)
+                    if (data.suggested_filters && data.suggested_filters.length > 0) {
+                        suggestedFilters.innerHTML = '';
+                        data.suggested_filters.forEach(filter => {
+                            const badge = document.createElement('span');
+                            badge.className = 'badge bg-light text-dark border me-1 filter-badge';
+                            badge.textContent = filter;
+                            suggestedFilters.appendChild(badge);
+                        });
+                    }
+                    
+                    // Scroll to bottom of chat
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Add error message
+                    const errorMessageDiv = document.createElement('div');
+                    errorMessageDiv.className = 'assistant-message chat-message';
+                    errorMessageDiv.innerHTML = `<p class="mb-0 text-danger">Sorry, there was an error processing your request.</p>`;
+                    chatContainer.appendChild(errorMessageDiv);
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                });
+            }
+            
+            // Event listeners
+            sendButton.addEventListener('click', sendMessage);
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            // Handle suggested filter clicks
+            suggestedFilters.addEventListener('click', function(e) {
+                if (e.target.classList.contains('filter-badge')) {
+                    userInput.value = `I'm interested in ${e.target.textContent}`;
+                    sendMessage();
+                }
+            });
+            
+            // Search and filter functionality would be implemented similarly
+            document.getElementById('search-button').addEventListener('click', function() {
+                const query = document.getElementById('search-input').value;
+                // Call search API with query
+                console.log('Searching for:', query);
+            });
+            
+            document.getElementById('apply-filters').addEventListener('click', function() {
+                const jurisdiction = document.getElementById('jurisdiction-filter').value;
+                const category = document.getElementById('category-filter').value;
+                const price = document.getElementById('price-filter').value;
+                
+                // Call search API with filters
+                console.log('Applying filters:', { jurisdiction, category, price });
+            });
+        });
+    </script>
+</body>
+</html>
