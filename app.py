@@ -19,7 +19,7 @@ logger.handlers.clear()
 logger.addHandler(handler)
 
 # OPB API Configuration
-OPB_API_BASE_URL = os.environ.get("OPB_API_BASE_URL", "http://0.0.0.0:8080")
+OPB_API_BASE_URL = os.environ.get("OPB_API_URL", "http://0.0.0.0:8080")
 API_KEY = os.environ["OPB_TEST_API_KEY"]
 headers = {"X-API-KEY": API_KEY}
 
@@ -175,7 +175,6 @@ def chat_stream():
                         
                         for line in r.iter_lines(decode_unicode=True):
                             if line:
-                                logger.info("Received line from API: %s", line)
                                 try:
                                     data_json = json.loads(line)
                                     
@@ -263,7 +262,7 @@ def chat_stream():
                                         
                                         # Send very simple done event with just the type and content
                                         # We'll include the structured response directly rather than trying to parse it
-                                        logger.info("Sending done event - simplified approach")
+                                        logger.info("Sending done event")
                                         yield f"data: {{\"type\": \"done\", \"content\": {json.dumps(complete_response)}}}\n\n"
                                     else:
                                         # Forward other message types
@@ -310,10 +309,10 @@ def apply_filters(results, filters):
     """Apply filters to search results"""
     filtered_results = results.copy()
     
-    # Filter by problem that product solves (currently labeled as 'jurisdiction' in the frontend)
-    if filters.get('jurisdiction') and filters['jurisdiction'] != "Any":
+    # Filter by problem that product solves (currently labeled as 'problem' in the frontend)
+    if filters.get('problem') and filters['problem'] != "Any":
         filtered_results = [p for p in filtered_results if 
-                           filters['jurisdiction'] in p['problem_that_product_solves'].split(',')]
+                           filters['problem'] in p['problem_that_product_solves'].split(',')]
     
     # Filter by service area
     if filters.get('service_area') and filters['service_area'] != "":
