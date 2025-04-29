@@ -66,7 +66,7 @@ with open('legal_tech_providers.json', 'r') as f:
     providers = json.load(f)
 
 # Configuration
-BOT_ID = "1d43728f-3673-4817-a0d9-f1271435e11c"
+BOT_ID = "03db4f39-e3dc-45f6-af17-ffc28b852a84"
 
 # In-memory session storage
 chat_sessions = {}
@@ -123,7 +123,7 @@ def initialize_chat():
                     user_location = get_user_location()
                     
                     # Customize initial message based on location
-                    initial_message = "Hello! I'm your legal tech directory assistant. How can I help you find the right legal technology solution? Please tell me about your legal issue, jurisdiction, and budget."
+                    initial_message = "Hello! I'm your legal tech directory assistant. How can I help you find the right legal technology solution? Please tell me about your legal issue, jurisdiction, and any other relevant factors."
                     
                     # Add location info if available
                     if user_location:
@@ -170,10 +170,8 @@ def chat_stream():
                     if r.status_code == 200:
                         # Process the streamed response
                         complete_response = ""
-                        in_query_analysis = False
-                        current_section = None
-                        section_content = {}
-                        query_analysis_buffer = ""
+                        in_solution_evaluation = False
+                        solution_evaluation_buffer = ""
                         
                         for line in r.iter_lines(decode_unicode=True):
                             if line:
@@ -187,17 +185,17 @@ def chat_stream():
                                         complete_response += content
                                         
                                         # Check for and handle query analysis tags - these should be filtered out
-                                        if "<query_analysis>" in content or in_query_analysis:
-                                            if "<query_analysis>" in content and not in_query_analysis:
-                                                in_query_analysis = True
-                                                query_analysis_buffer = content[content.find("<query_analysis>"):]
-                                                clean_content = content[:content.find("<query_analysis>")]
-                                            elif "</query_analysis>" in content and in_query_analysis:
-                                                in_query_analysis = False
-                                                query_analysis_buffer += content[:content.find("</query_analysis>") + len("</query_analysis>")]
-                                                clean_content = content[content.find("</query_analysis>") + len("</query_analysis>"):]
-                                            elif in_query_analysis:
-                                                query_analysis_buffer += content
+                                        if "<solution_evaluation>" in content or in_solution_evaluation:
+                                            if "<solution_evaluation>" in content and not in_solution_evaluation:
+                                                in_solution_evaluation = True
+                                                solution_evaluation_buffer = content[content.find("<solution_evaluation>"):]
+                                                clean_content = content[:content.find("<solution_evaluation>")]
+                                            elif "</solution_evaluation>" in content and in_solution_evaluation:
+                                                in_solution_evaluation = False
+                                                solution_evaluation_buffer += content[:content.find("</solution_evaluation>") + len("</solution_evaluation>")]
+                                                clean_content = content[content.find("</solution_evaluation>") + len("</solution_evaluation>"):]
+                                            elif in_solution_evaluation:
+                                                solution_evaluation_buffer += content
                                                 clean_content = ""
                                             else:
                                                 clean_content = content
@@ -225,11 +223,9 @@ def chat_stream():
                                     elif data_json.get("type") == "done":
                                         # When done, add suggested filters and structure the content
                                         # First remove any query analysis from the complete response
-                                        if "<query_analysis>" in complete_response and "</query_analysis>" in complete_response:
-                                            query_analysis = complete_response[complete_response.find("<query_analysis>"):complete_response.find("</query_analysis>") + len("</query_analysis>")]
-                                            complete_response = complete_response.replace(query_analysis, "")
-                                            
-                                        suggested_filters = extract_filters_from_response(complete_response, user_message)
+                                        if "<solution_evaluation>" in complete_response and "</solution_evaluation>" in complete_response:
+                                            solution_evaluation = complete_response[complete_response.find("<solution_evaluation>"):complete_response.find("</solution_evaluation>") + len("</solution_evaluation>")]
+                                            complete_response = complete_response.replace(solution_evaluation, "")
                                         
                                         # Parse structured response parts if present
                                         response_parts = {}
@@ -289,81 +285,57 @@ def chat_stream():
 
 @app.route('/api/search', methods=['POST'])
 def search():
-    """Search for legal tech providers based on query and filters"""
-    query = request.json.get('query', '')
+    """Search for legal tech providers based on product name and filters"""
+    query = request.json.get('query', '').strip()
     filters = request.json.get('filters', {})
     
-    if query and API_AVAILABLE:
-        try:
-            # Use OPB's API for embeddings
-            with api_request(
-                "encoders/encode_text",
-                json={"text": query}
-            ) as response:
-                if response.status_code == 200:
-                    data = response.json()
-                    if data.get("success"):
-                        embeddings = data.get("embeddings", [])
-                        
-                        # We now have embeddings, use them to calculate semantic similarity
-                        # This would normally be done by the backend, but for this demo
-                        # we'll use a simplified approach
-                        results = []
-                        
-                        for provider in providers:
-                            # Calculate relevance using embeddings and text matching
-                            relevance = calculate_relevance(query, provider, embeddings)
-                            if relevance > 0.3:  # Lower threshold for more results
-                                provider_copy = provider.copy()
-                                provider_copy['relevance'] = relevance
-                                results.append(provider_copy)
-                        
-                        # Sort by relevance
-                        results.sort(key=lambda x: x['relevance'], reverse=True)
-                    else:
-                        # API error
-                        logger.error(f"Error in embeddings API: {data.get('error', 'Unknown error')}")
-                        return jsonify({"error": "Failed to process search query"}), 500
-                else:
-                    # API call failed
-                    logger.error(f"Error in embeddings API call: {response.status_code} - {response.text if hasattr(response, 'text') else 'Unknown error'}")
-                    return jsonify({"error": "Failed to process search query"}), 500
-                    
-        except Exception as e:
-            logger.error(f"Error in vector search: {e}")
-            return jsonify({"error": "Failed to connect to backend API"}), 503
-    else:
-        # No query or API unavailable
-        if not API_AVAILABLE:
-            return jsonify({"error": "Search service unavailable"}), 503
-        else:
-            # Empty query, return all providers
-            results = providers.copy()
+    # Start with all providers
+    results = providers.copy()
     
-    # Apply filters
+    # If query is provided, filter by product name
+    if query:
+        # Simple product name matching
+        results = [p for p in results if query.lower() in p['product_name'].lower()]
+        
+        # If no results found with exact product name match, try more flexible matching
+        if not results:
+            results = [p for p in providers if calculate_relevance(query, p) > 0.3]
+    
+    # Apply additional filters
     results = apply_filters(results, filters)
-    
-    return jsonify({'results': results})
 
+    return jsonify({'results': results})
 
 def apply_filters(results, filters):
     """Apply filters to search results"""
-    if filters.get('jurisdiction'):
-        results = [p for p in results if filters['jurisdiction'] in p['jurisdiction']]
+    filtered_results = results.copy()
     
-    if filters.get('service_area'):
-        results = [p for p in results if filters['service_area'] == p['service_area']]
+    # Filter by problem that product solves (currently labeled as 'jurisdiction' in the frontend)
+    if filters.get('jurisdiction') and filters['jurisdiction'] != "Any":
+        filtered_results = [p for p in filtered_results if 
+                           filters['jurisdiction'] in p['problem_that_product_solves'].split(',')]
     
-    if filters.get('pricing'):
-        results = [p for p in results if filters['pricing'] == p['pricing']]
+    # Filter by service area
+    if filters.get('service_area') and filters['service_area'] != "":
+        filtered_results = [p for p in filtered_results if 
+                           filters['service_area'] in p['service_area'].split(',')]
     
-    if filters.get('mobile_app_available'):
-        results = [p for p in results if filters['mobile_app_available'] == p['mobile_app_available']]
+    # Filter by pricing model
+    if filters.get('pricing') and filters['pricing'] != "Any Price":
+        filtered_results = [p for p in filtered_results if 
+                          p['pricing'] == filters['pricing']]
     
-    if filters.get('justice_tech_assn_member'):
-        results = [p for p in results if filters['justice_tech_assn_member'] == p['justice_tech_assn_member']]
+    # Filter by mobile app availability
+    if filters.get('mobile_app_available') and filters['mobile_app_available'] != "Any":
+        filtered_results = [p for p in filtered_results if 
+                          p['mobile_app_available'] == filters['mobile_app_available']]
     
-    return results
+    # Filter by Justice Tech Association membership
+    if filters.get('justice_tech_assn_member') and filters['justice_tech_assn_member'] != "Any":
+        filtered_results = [p for p in filtered_results if 
+                          p['justice_tech_assn_member'] == filters['justice_tech_assn_member']]
+    
+    return filtered_results
 
 @app.route('/api/provider/<int:provider_id>', methods=['GET'])
 def get_provider(provider_id):
@@ -376,133 +348,36 @@ def get_provider(provider_id):
     # In a real implementation, you might add additional details here
     return jsonify(provider)
 
-def extract_filters_from_response(response, user_message):
-    """Extract suggested filters from the assistant's response"""
-    suggested_filters = []
-    
-    # Check for jurisdictions
-    jurisdictions = ['US', 'UK', 'EU', 'CA', 'AU']
-    for jurisdiction in jurisdictions:
-        if jurisdiction.lower() in response.lower() or jurisdiction.lower() in user_message.lower():
-            suggested_filters.append(f"jurisdiction:{jurisdiction}")
-            break
-    
-    # Check for service areas
-    service_areas = [
-        'Document Automation', 
-        'Contract Management', 
-        'Practice Management', 
-        'E-Discovery', 
-        'Legal Research',
-        'Client Intake',
-        'Compliance'
-    ]
-    for service_area in service_areas:
-        if service_area.lower() in response.lower() or service_area.lower() in user_message.lower():
-            suggested_filters.append(f"service_area:{service_area}")
-            break
-    
-    # Check for pricing indicators
-    pricing_terms = {
-        'free': 'Free',
-        'subscription': 'Subscription',
-        'contact': 'Contact for quote',
-        'flat fee': 'Flat + Fees',
-        'yearly': 'Yearly'
-    }
-    
-    for term, pricing in pricing_terms.items():
-        if term.lower() in response.lower() or term.lower() in user_message.lower():
-            suggested_filters.append(f"pricing:{pricing}")
-            break
-    
-    # If no specific pricing found but price is mentioned, suggest checking all options
-    if ('price' in response.lower() or 'cost' in response.lower() or 
-        'price' in user_message.lower() or 'cost' in user_message.lower()) and not any(term.lower() in response.lower() or term.lower() in user_message.lower() for term in pricing_terms.keys()):
-        suggested_filters.append("pricing:Subscription")
-    
-    # Check for other useful filters
-    if 'mobile' in response.lower() or 'app' in response.lower() or 'mobile' in user_message.lower():
-        suggested_filters.append("mobile_app_available:Yes")
-    
-    if 'justice tech' in response.lower() or 'justice tech' in user_message.lower():
-        suggested_filters.append("justice_tech_assn_member:Yes")
-    
-    return suggested_filters[:3]  # Limit to 3 suggested filters
-
-
 def calculate_relevance(query, provider, embeddings=None):
-    """Calculate relevance score between query and provider
-    
-    This is a simplified version. In a production environment, this would be handled
-    by the vector database in the backend.
-    
-    Args:
-        query: The search query
-        provider: The provider data
-        embeddings: Optional embeddings from the API (future use)
-    
-    Returns:
-        A relevance score between 0 and 1
-    """
+    """Calculate relevance score between query and provider with focus on product names"""
     query_lower = query.lower()
-    relevance_score = 0
     
-    # Exact match boosting
-    # Product name match (highest weight)
-    if query_lower in provider['product_name'].lower():
-        relevance_score += 0.6
+    # For product name search, prioritize exact or partial product name matches
+    product_name_lower = provider['product_name'].lower()
     
-    # Problem solved match
-    if query_lower in provider['problem_that_product_solves'].lower():
-        relevance_score += 0.5
+    # Exact product name match (highest score)
+    if query_lower == product_name_lower:
+        return 1.0
     
-    # Elevator pitch match
-    if query_lower in provider['elevator_pitch'].lower():
-        relevance_score += 0.4
+    # Product name starts with query
+    if product_name_lower.startswith(query_lower):
+        return 0.9
     
-    # Service area match
-    if query_lower in provider['service_area'].lower():
-        relevance_score += 0.3
+    # Query is a significant part of the product name
+    if query_lower in product_name_lower:
+        return 0.8
     
-    # Jurisdiction match
-    jurisdictions = provider['jurisdiction'].split(', ') if isinstance(provider['jurisdiction'], str) else provider['jurisdiction']
-    for jurisdiction in jurisdictions:
-        if query_lower in jurisdiction.lower():
-            relevance_score += 0.2
-            break
+    # Partial match - check if words in query match parts of product name
+    query_words = query_lower.split()
+    product_words = product_name_lower.split()
     
-    # Primary users match
-    if query_lower in provider['primary_users'].lower():
-        relevance_score += 0.2
+    # Count matching words
+    matching_words = sum(1 for word in query_words if any(word in pw for pw in product_words))
+    if matching_words > 0:
+        return 0.6 * (matching_words / len(query_words))
     
-    # Partial match relevance (if no exact matches were found)
-    if relevance_score == 0:
-        # Split query into words
-        query_words = query_lower.split()
-        
-        # Check for partial matches in key fields
-        key_fields = [
-            ('product_name', 0.4),
-            ('problem_that_product_solves', 0.3),
-            ('elevator_pitch', 0.3),
-            ('service_area', 0.2),
-            ('primary_users', 0.1)
-        ]
-        
-        # Count word matches in each field
-        for field, weight in key_fields:
-            field_text = provider[field].lower()
-            match_count = sum(1 for word in query_words if word in field_text)
-            if match_count > 0:
-                # Calculate proportional match and add weighted score
-                proportion = match_count / len(query_words)
-                relevance_score += weight * proportion
-    
-    # If we had embeddings from the API, we could use them here
-    # This would be a more advanced semantic search capability
-    
-    return min(relevance_score, 1.0)  # Cap at 1.0
+    # Very low relevance for non-product name matches
+    return 0.1
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "product_name": "A2J Tech",
     "website": "https://www.goa2jtech.com/",
     "public_contact_information": "info@goa2jtech.com",
@@ -20,6 +21,7 @@
     "last_updated": "12/16/2024 4:21pm"
   },
   {
+    "id": 2,
     "product_name": "Angeion",
     "website": "https://www.angeiongroup.com/",
     "public_contact_information": "info@angeiongroup.com",
@@ -40,6 +42,7 @@
     "last_updated": "12/16/2024 4:30pm"
   },
   {
+    "id": 4,
     "product_name": "Citizen HQ",
     "website": "https://www.mycitizenhq.com/",
     "public_contact_information": "By request through website",
@@ -60,6 +63,7 @@
     "last_updated": "12/16/2024 4:23pm"
   },
   {
+    "id": 5,
     "product_name": "Citizenshipworks",
     "website": "https://www.citizenshipworks.org/en/home/index",
     "public_contact_information": "By request through website",
@@ -80,6 +84,7 @@
     "last_updated": "12/16/2024 4:23pm"
   },
   {
+    "id": 6,
     "product_name": "Citizenshipworks Pro",
     "website": "https://www.citizenshipworks.org/en/for-organizations",
     "public_contact_information": "By request through website",
@@ -100,6 +105,7 @@
     "last_updated": "12/16/2024 4:23pm"
   },
   {
+    "id": 7,
     "product_name": "Closing the Gap",
     "website": "https://www.closingthegap.com/",
     "public_contact_information": "https://www.closingthegap.com/contact-us/",
@@ -120,6 +126,7 @@
     "last_updated": "12/16/2024 4:23pm"
   },
   {
+    "id": 8,
     "product_name": "Courtroom5",
     "website": "https://courtroom5.com/",
     "public_contact_information": "By request through website",
@@ -140,6 +147,7 @@
     "last_updated": "12/16/2024 4:23pm"
   },
   {
+    "id": 9,
     "product_name": "Creative Contracts",
     "website": "https://creative-contracts.com/",
     "public_contact_information": "info@creative-contracts.com",
@@ -160,10 +168,11 @@
     "last_updated": "12/16/2024 4:23pm"
   },
   {
+    "id": 10,
     "product_name": "Daisy Debt",
     "website": "https://daisydebt.org/",
     "public_contact_information": "https://daisydebt.org/contact",
-    "problem_that_product_solves": "Finances, Money, Debt",
+    "problem_that_product_solves": "Finances,Money,Debt",
     "service_area": "Alabama,Arizona,California,Alaska,Arkansas,Colorado,Connecticut,Delaware,Florida,Hawaii,Georgia,Illinois,Iowa,Kansas,Louisiana,Idaho,Kentucky,Indiana,Massachusetts,Maine,Michigan,Minnesota,Mississippi,Maryland,Montana,Nevada,New Hampshire,Nebraska,New Jersey,North Dakota,Ohio,Oklahoma,Oregon,Rhode Island,North Carolina,Pennsylvania,New York,Missouri,New Mexico,South Carolina,Tennessee,Texas,South Dakota,Utah,Vermont,Virginia,Washington,West Virginia,Wisconsin,Wyoming,Nationwide (US)",
     "jurisdiction": "",
     "type_of_company": "Non-profit",
@@ -180,6 +189,7 @@
     "last_updated": "12/16/2024 4:23pm"
   },
   {
+    "id": 11,
     "product_name": "DoNotPay",
     "website": "https://donotpay.com/",
     "public_contact_information": "support@donotpay.com",
@@ -200,10 +210,11 @@
     "last_updated": "12/16/2024 4:23pm"
   },
   {
+    "id": 12,
     "product_name": "Euphoria",
     "website": "https://euphoria.lgbt/",
     "public_contact_information": "N/A",
-    "problem_that_product_solves": "Finances, Money, Debt\",Gender Marker Change,Name Change",
+    "problem_that_product_solves": "Finances,Money,Debt,Gender Marker Change,Name Change",
     "service_area": "Alabama,Arizona,California,Alaska,Arkansas,Colorado,Connecticut,Delaware,Florida,Hawaii,Georgia,Illinois,Iowa,Kansas,Louisiana,Idaho,Kentucky,Indiana,Massachusetts,Maine,Michigan,Minnesota,Mississippi,Maryland,Montana,Nevada,New Hampshire,Nebraska,New Jersey,North Dakota,Ohio,Oklahoma,Oregon,Rhode Island,North Carolina,Pennsylvania,New York,Missouri,New Mexico,South Carolina,Tennessee,Texas,South Dakota,Utah,Vermont,Virginia,Washington,West Virginia,Wisconsin,Wyoming,Nationwide (US)",
     "jurisdiction": "",
     "type_of_company": "Unspecified",
@@ -220,6 +231,7 @@
     "last_updated": "12/16/2024 4:24pm"
   },
   {
+    "id": 13,
     "product_name": "Filing Fairness",
     "website": "https://law.stanford.edu/filing-fairness-project/",
     "public_contact_information": "https://filingfairnessproject.law.stanford.edu/contact-us/",
@@ -240,6 +252,7 @@
     "last_updated": "12/16/2024 4:24pm"
   },
   {
+    "id": 14,
     "product_name": "Formally",
     "website": "https://formally.com/home",
     "public_contact_information": "support@formally.com",
@@ -260,10 +273,11 @@
     "last_updated": "12/16/2024 4:24pm"
   },
   {
+    "id": 15,
     "product_name": "FRSH",
     "website": "https://myfrsh.com/",
     "public_contact_information": "By signing up on website",
-    "problem_that_product_solves": "Bankruptcy,\"Finances, Money, Debt\",Health Insurance",
+    "problem_that_product_solves": "Bankruptcy,Finances,Money,Debt,Health Insurance",
     "service_area": "Alabama,Arizona,California,Alaska,Arkansas,Colorado,Connecticut,Delaware,Florida,Hawaii,Georgia,Illinois,Iowa,Kansas,Louisiana,Idaho,Kentucky,Indiana,Massachusetts,Maine,Michigan,Minnesota,Mississippi,Maryland,Montana,Nevada,New Hampshire,Nebraska,New Jersey,North Dakota,Ohio,Oklahoma,Oregon,Rhode Island,North Carolina,Pennsylvania,New York,Missouri,New Mexico,South Carolina,Tennessee,Texas,South Dakota,Utah,Vermont,Virginia,Washington,West Virginia,Wisconsin,Wyoming,Nationwide (US)",
     "jurisdiction": "",
     "type_of_company": "For Profit",
@@ -280,6 +294,7 @@
     "last_updated": "12/16/2024 4:24pm"
   },
   {
+    "id": 16,
     "product_name": "Hello Divorce",
     "website": "https://hellodivorce.com/",
     "public_contact_information": "https://knowledgebase.hellodivorce.com/knowledge?_gl=1*3zsc4z*_gcl_au*OTI5NDIzNjE1LjE3MjgzOTI5ODE.*_ga*MTUzMjY5Njk5MS4xNzI4MzkyOTgx*_ga_0L5VY330PD*MTcyODM5Mjk4MC4xLjAuMTcyODM5Mjk4MC42MC4wLjA.",
@@ -300,6 +315,7 @@
     "last_updated": "12/16/2024 4:24pm"
   },
   {
+    "id": 17,
     "product_name": "Honest Jobs",
     "website": "https://www.honestjobs.com/",
     "public_contact_information": "ContactUs@Honestjobs.com",
@@ -320,6 +336,7 @@
     "last_updated": "12/16/2024 4:24pm"
   },
   {
+    "id": 18,
     "product_name": "Justicia Lab",
     "website": "https://www.justicialab.org/",
     "public_contact_information": "https://www.justicialab.org/#contact",
@@ -340,6 +357,7 @@
     "last_updated": "12/16/2024 4:25pm"
   },
   {
+    "id": 19,
     "product_name": "Law Media Labs",
     "website": "https://www.richardgranat.com/",
     "public_contact_information": "https://www.richardgranat.com/contact",
@@ -360,6 +378,7 @@
     "last_updated": "12/16/2024 4:25pm"
   },
   {
+    "id": 20,
     "product_name": "Law Soup",
     "website": "https://lawsoup.org/",
     "public_contact_information": "https://lawsoup.org/contact-us/",
@@ -380,6 +399,7 @@
     "last_updated": "12/16/2024 4:25pm"
   },
   {
+    "id": 21,
     "product_name": "LawHelp",
     "website": "www.lawhelp.org",
     "public_contact_information": "support@lawhelp.org",
@@ -400,6 +420,7 @@
     "last_updated": "12/16/2024 4:25pm"
   },
   {
+    "id": 22,
     "product_name": "Painworth",
     "website": "https://www.painworth.com/",
     "public_contact_information": "https://www.painworth.com/contact-us",
@@ -420,6 +441,7 @@
     "last_updated": "12/16/2024 4:27pm"
   },
   {
+    "id": 23,
     "product_name": "Justice Bolt",
     "website": "https://justicebolt.com/law-firms/",
     "public_contact_information": "https://justicebolt.com/law-firms/#request-demo",
@@ -440,6 +462,7 @@
     "last_updated": "12/16/2024 4:25pm"
   },
   {
+    "id": 24,
     "product_name": "PainWorth",
     "website": "https://www.painworth.com/",
     "public_contact_information": "wecare@painworth.com",
@@ -460,6 +483,7 @@
     "last_updated": "12/16/2024 4:27pm"
   },
   {
+    "id": 25,
     "product_name": "PairTree",
     "website": "https://pairtreefamily.com/",
     "public_contact_information": "hello@pairtreefamily.com",
@@ -480,6 +504,7 @@
     "last_updated": "12/16/2024 4:27pm"
   },
   {
+    "id": 26,
     "product_name": "ProBonoNet",
     "website": "https://www.probono.net/",
     "public_contact_information": "By request through website",
@@ -500,6 +525,7 @@
     "last_updated": "12/16/2024 4:27pm"
   },
   {
+    "id": 27,
     "product_name": "Reyets",
     "website": "https://www.reyets.com/",
     "public_contact_information": "By request through website",
@@ -520,6 +546,7 @@
     "last_updated": "12/16/2024 4:27pm"
   },
   {
+    "id": 28,
     "product_name": "Shariawiz",
     "website": "https://www.shariawiz.com/",
     "public_contact_information": "(888) 474-2742",
@@ -540,6 +567,7 @@
     "last_updated": "12/16/2024 4:27pm"
   },
   {
+    "id": 29,
     "product_name": "Simple Citizen",
     "website": "https://simplecitizen.com/",
     "public_contact_information": "By request through website",
@@ -560,6 +588,7 @@
     "last_updated": "12/16/2024 4:27pm"
   },
   {
+    "id": 30,
     "product_name": "*Simple Wills Trusts",
     "website": "https://www.simplewillstrusts.com/",
     "public_contact_information": "help@simplewillstrusts.com",
@@ -580,6 +609,7 @@
     "last_updated": "12/16/2024 4:30pm"
   },
   {
+    "id": 31,
     "product_name": "SplitSmart",
     "website": "https://splitsmart.com/",
     "public_contact_information": "hello@splitsmart.com",
@@ -600,6 +630,7 @@
     "last_updated": "12/16/2024 4:27pm"
   },
   {
+    "id": 32,
     "product_name": "Stateside Legal",
     "website": "https://www.statesidelegal.org/",
     "public_contact_information": "By request through website",
@@ -620,6 +651,7 @@
     "last_updated": "12/16/2024 4:27pm"
   },
   {
+    "id": 33,
     "product_name": "OpenProBono",
     "website": "https://www.openprobono.com/",
     "public_contact_information": "By request through website",
@@ -640,6 +672,7 @@
     "last_updated": "12/16/2024 4:27pm"
   },
   {
+    "id": 34,
     "product_name": "Descrybe.ai",
     "website": "https://descrybe.ai/",
     "public_contact_information": "help@descrybe.com",
@@ -660,6 +693,7 @@
     "last_updated": "12/16/2024 4:23pm"
   },
   {
+    "id": 35,
     "product_name": "Trust & Will",
     "website": "https://trustandwill.com/",
     "public_contact_information": "By request through website",
@@ -680,6 +714,7 @@
     "last_updated": "12/16/2024 4:28pm"
   },
   {
+    "id": 36,
     "product_name": "TurnSignl",
     "website": "https://www.turnsignl.com/",
     "public_contact_information": "(612) 812-0056, info@turnsignl.com",
@@ -700,10 +735,11 @@
     "last_updated": "12/16/2024 4:28pm"
   },
   {
+    "id": 37,
     "product_name": "Upsolve",
     "website": "https://upsolve.org/",
     "public_contact_information": "By request through website",
-    "problem_that_product_solves": "Bankruptcy,\"Finances, Money, Debt",
+    "problem_that_product_solves": "Bankruptcy,Finances,Money,Debt",
     "service_area": "Alabama,Arizona,California,Alaska,Arkansas,Colorado,Connecticut,Delaware,Florida,Hawaii,Georgia,Illinois,Iowa,Kansas,Louisiana,Idaho,Kentucky,Indiana,Massachusetts,Maine,Michigan,Minnesota,Mississippi,Maryland,Montana,Nevada,New Hampshire,Nebraska,New Jersey,North Dakota,Ohio,Oklahoma,Oregon,Rhode Island,North Carolina,Pennsylvania,New York,Missouri,New Mexico,South Carolina,Tennessee,Texas,South Dakota,Utah,Vermont,Virginia,Washington,West Virginia,Wisconsin,Wyoming,Nationwide (US)",
     "jurisdiction": "",
     "type_of_company": "Non-profit",
@@ -720,6 +756,7 @@
     "last_updated": "12/16/2024 4:28pm"
   },
   {
+    "id": 38,
     "product_name": "QDRO Center",
     "website": "https://qdrocenter.org/",
     "public_contact_information": "By request through website",
@@ -740,6 +777,7 @@
     "last_updated": "12/16/2024 4:27pm"
   },
   {
+    "id": 39,
     "product_name": "Courtroom 5-Personal Practice of Law (PPL)",
     "website": "https://courtroom5.com/",
     "public_contact_information": "info@courtroom5.com",
@@ -760,6 +798,7 @@
     "last_updated": "12/16/2024 4:44pm"
   },
   {
+    "id": 40,
     "product_name": "ZAF Legal",
     "website": "www.zaflegal.com",
     "public_contact_information": "zaflegal.com; 801-346-0080",
@@ -780,6 +819,7 @@
     "last_updated": "12/16/2024 4:46pm"
   },
   {
+    "id": 41,
     "product_name": "Hello Landlord",
     "website": "https://www.sixfifty.com/pro-bono/hello-landlord/",
     "public_contact_information": "https://www.sixfifty.com/about/contact-us/",
@@ -800,6 +840,7 @@
     "last_updated": "12/16/2024 4:44pm"
   },
   {
+    "id": 42,
     "product_name": "ABA Free Legal Answers",
     "website": "https://abafreelegalanswers.org/",
     "public_contact_information": "https://abafreelegalanswers.org/Contact",
@@ -820,6 +861,7 @@
     "last_updated": "12/16/2024 4:30pm"
   },
   {
+    "id": 43,
     "product_name": "Air Help",
     "website": "https://www.airhelp.com/en/",
     "public_contact_information": "info@airhelp.com",
@@ -840,6 +882,7 @@
     "last_updated": "12/16/2024 4:22pm"
   },
   {
+    "id": 44,
     "product_name": "ARAG Legal",
     "website": "https://www.araglegal.com/",
     "public_contact_information": "https://www.araglegal.com/contact-us",
@@ -860,6 +903,7 @@
     "last_updated": "12/16/2024 4:30pm"
   },
   {
+    "id": 45,
     "product_name": "Advocord",
     "website": "https://www.advocord.com/",
     "public_contact_information": "https://www.advocord.com/contact",
@@ -880,6 +924,7 @@
     "last_updated": "12/16/2024 4:30pm"
   },
   {
+    "id": 46,
     "product_name": "Brightwayz",
     "website": "https://www.brightwayz.org/",
     "public_contact_information": "https://www.brightwayz.org/",
@@ -900,6 +945,7 @@
     "last_updated": "12/16/2024 4:23pm"
   },
   {
+    "id": 47,
     "product_name": "kosigner",
     "website": "https://www.kosigner.com/",
     "public_contact_information": "https://www.kosigner.com/contact",
@@ -920,6 +966,7 @@
     "last_updated": "12/16/2024 4:25pm"
   },
   {
+    "id": 48,
     "product_name": "Redo.io",
     "website": "https://www.redoio.info/",
     "public_contact_information": "aparna.komarla@gmail.com",
@@ -940,6 +987,7 @@
     "last_updated": "12/16/2024 4:27pm"
   },
   {
+    "id": 49,
     "product_name": "Thurgood",
     "website": "https://askthurgood.com/",
     "public_contact_information": "",
@@ -960,6 +1008,7 @@
     "last_updated": "12/16/2024 4:28pm"
   },
   {
+    "id": 50,
     "product_name": "Consulta Immigration",
     "website": "https://www.consultaimmigration.com/",
     "public_contact_information": "info@consultaimm.com",
@@ -980,6 +1029,7 @@
     "last_updated": "12/16/2024 4:44pm"
   },
   {
+    "id": 51,
     "product_name": "Clearbox Naturalization",
     "website": "www.clearboxlegal.com",
     "public_contact_information": "anjana@clearboxlegal.com",
@@ -1000,6 +1050,7 @@
     "last_updated": "12/16/2024 4:44pm"
   },
   {
+    "id": 52,
     "product_name": "Fastcase",
     "website": "https://www.fastcase.com/team/",
     "public_contact_information": "helpdesk-us@vlex.com; 866.773.2782",
@@ -1020,6 +1071,7 @@
     "last_updated": "12/16/2024 4:28pm"
   },
   {
+    "id": 53,
     "product_name": "FastVisa US",
     "website": "https://www.fastvisa.us/",
     "public_contact_information": "",
@@ -1040,6 +1092,7 @@
     "last_updated": "12/16/2024 4:28pm"
   },
   {
+    "id": 54,
     "product_name": "Thurgood",
     "website": "www.askthurgood.com",
     "public_contact_information": "brandon.burns@askthurgood.com",

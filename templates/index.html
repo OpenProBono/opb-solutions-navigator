@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Legal Tech Solutions Navigator</title>
+    <title>Legal Solutions Navigator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
@@ -224,6 +224,17 @@
             padding: 15px;
             margin-bottom: 15px;
         }
+        .section-content {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.3s forwards;
+        }
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -269,7 +280,7 @@
                     </div>
                     <div class="card-body">
                         <div class="input-group mb-3">
-                            <input type="text" id="search-input" class="form-control search-field" placeholder="Search by product name or description...">
+                            <input type="text" id="search-input" class="form-control search-field" placeholder="Search by product name...">
                             <button id="search-button" class="btn btn-outline-primary btn-search">
                                 <i class="bi bi-search"></i>
                             </button>
@@ -278,27 +289,122 @@
                         <div class="filter-section">                            
                             <div class="mb-3">
                                 <label class="form-label">Service Area</label>
-                                <select id="service-area-filter" class="form-select">
-                                    <option value="">All Service Areas</option>
-                                    <option value="Document Automation">Document Automation</option>
-                                    <option value="Contract Management">Contract Management</option>
-                                    <option value="Practice Management">Practice Management</option>
-                                    <option value="Legal Research">Legal Research</option>
-                                    <option value="E-Discovery">E-Discovery</option>
-                                    <option value="Client Intake">Client Intake</option>
-                                    <option value="Compliance">Compliance</option>
+                                <select id="service-area-filter" class="form-select" multiple>
+                                    <option value="Nationwide (US)">Nationwide (US)</option>
+                                    <option value="International">International</option>
+                                    <option value="Alabama">Alabama</option>
+                                    <option value="Alaska">Alaska</option>
+                                    <option value="Arizona">Arizona</option>
+                                    <option value="Arkansas">Arkansas</option>
+                                    <option value="California">California</option>
+                                    <option value="Colorado">Colorado</option>
+                                    <option value="Connecticut">Connecticut</option>
+                                    <option value="Delaware">Delaware</option>
+                                    <option value="Florida">Florida</option>
+                                    <option value="Georgia">Georgia</option>
+                                    <option value="Hawaii">Hawaii</option>
+                                    <option value="Idaho">Idaho</option>
+                                    <option value="Illinois">Illinois</option>
+                                    <option value="Indiana">Indiana</option>
+                                    <option value="Iowa">Iowa</option>
+                                    <option value="Kansas">Kansas</option>
+                                    <option value="Kentucky">Kentucky</option>
+                                    <option value="Louisiana">Louisiana</option>
+                                    <option value="Maine">Maine</option>
+                                    <option value="Maryland">Maryland</option>
+                                    <option value="Massachusetts">Massachusetts</option>
+                                    <option value="Michigan">Michigan</option>
+                                    <option value="Minnesota">Minnesota</option>
+                                    <option value="Mississippi">Mississippi</option>
+                                    <option value="Missouri">Missouri</option>
+                                    <option value="Montana">Montana</option>
+                                    <option value="Nebraska">Nebraska</option>
+                                    <option value="Nevada">Nevada</option>
+                                    <option value="New Hampshire">New Hampshire</option>
+                                    <option value="New Jersey">New Jersey</option>
+                                    <option value="New Mexico">New Mexico</option>
+                                    <option value="New York">New York</option>
+                                    <option value="North Carolina">North Carolina</option>
+                                    <option value="North Dakota">North Dakota</option>
+                                    <option value="Ohio">Ohio</option>
+                                    <option value="Oklahoma">Oklahoma</option>
+                                    <option value="Oregon">Oregon</option>
+                                    <option value="Pennsylvania">Pennsylvania</option>
+                                    <option value="Rhode Island">Rhode Island</option>
+                                    <option value="South Carolina">South Carolina</option>
+                                    <option value="South Dakota">South Dakota</option>
+                                    <option value="Tennessee">Tennessee</option>
+                                    <option value="Texas">Texas</option>
+                                    <option value="Utah">Utah</option>
+                                    <option value="Vermont">Vermont</option>
+                                    <option value="Virginia">Virginia</option>
+                                    <option value="Washington">Washington</option>
+                                    <option value="West Virginia">West Virginia</option>
+                                    <option value="Wisconsin">Wisconsin</option>
+                                    <option value="Wyoming">Wyoming</option>
                                 </select>
                             </div>
                             
                             <div class="mb-3">
-                                <label class="form-label">Jurisdiction</label>
+                                <label class="form-label">Problem that Product Solves</label>
                                 <select id="jurisdiction-filter" class="form-select">
-                                    <option value="">All Jurisdictions</option>
-                                    <option value="US">United States</option>
-                                    <option value="UK">United Kingdom</option>
-                                    <option value="EU">European Union</option>
-                                    <option value="CA">Canada</option>
-                                    <option value="AU">Australia</option>
+                                    <option value="">Any</option>
+                                    <option value="Accessibility">Accessibility</option>
+                                    <option value="Adoption">Adoption</option>
+                                    <option value="Adult Dependent">Adult Dependent</option>
+                                    <option value="Advocacy Campaigns">Advocacy Campaigns</option>
+                                    <option value="Appointment Booking">Appointment Booking</option>
+                                    <option value="Arbitration Claims">Arbitration Claims</option>
+                                    <option value="Auto Tickets">Auto Tickets</option>
+                                    <option value="Bankruptcy">Bankruptcy</option>
+                                    <option value="Case Management Systems">Case Management Systems</option>
+                                    <option value="Child Care">Child Care</option>
+                                    <option value="Child Support">Child Support</option>
+                                    <option value="Civil">Civil</option>
+                                    <option value="Civil Rights Protection">Civil Rights Protection</option>
+                                    <option value="Coordinated Intake">Coordinated Intake</option>
+                                    <option value="Credit">Credit</option>
+                                    <option value="Crime Victims">Crime Victims</option>
+                                    <option value="Criminal (limited)">Criminal (limited)</option>
+                                    <option value="Custody">Custody</option>
+                                    <option value="Cybersecurity">Cybersecurity</option>
+                                    <option value="Debt">Debt</option>
+                                    <option value="Design & Marketing">Design & Marketing</option>
+                                    <option value="Disaster">Disaster</option>
+                                    <option value="Divorce">Divorce</option>
+                                    <option value="Document Automation">Document Automation</option>
+                                    <option value="Employment">Employment</option>
+                                    <option value="Finances">Finances</option>
+                                    <option value="Gender Marker Change">Gender Marker Change</option>
+                                    <option value="Health & Disability Rights">Health & Disability Rights</option>
+                                    <option value="Health Insurance">Health Insurance</option>
+                                    <option value="Housing">Housing</option>
+                                    <option value="Immigration">Immigration</option>
+                                    <option value="Intake Improvement">Intake Improvement</option>
+                                    <option value="Landlord/Tenant">Landlord/Tenant</option>
+                                    <option value="Legal Assistance">Legal Assistance</option>
+                                    <option value="Legal Contracts">Legal Contracts</option>
+                                    <option value="Legal Guide">Legal Guide</option>
+                                    <option value="Legal Kiosks">Legal Kiosks</option>
+                                    <option value="Legal Media">Legal Media</option>
+                                    <option value="Litigation">Litigation</option>
+                                    <option value="Money">Money</option>
+                                    <option value="Name Change">Name Change</option>
+                                    <option value="Notary">Notary</option>
+                                    <option value="Other">Other</option>
+                                    <option value="Personal Injury">Personal Injury</option>
+                                    <option value="Portals">Portals</option>
+                                    <option value="Project Management">Project Management</option>
+                                    <option value="Public Benefits">Public Benefits</option>
+                                    <option value="Qualified Domestic Relations Orders">Qualified Domestic Relations Orders</option>
+                                    <option value="Rental">Rental</option>
+                                    <option value="Social Media App">Social Media App</option>
+                                    <option value="Software Integration">Software Integration</option>
+                                    <option value="Technology Assessments">Technology Assessments</option>
+                                    <option value="Veteran Benefits">Veteran Benefits</option>
+                                    <option value="Website Development">Website Development</option>
+                                    <option value="Wills">Wills</option>
+                                    <option value="Workplace Discrimination">Workplace Discrimination</option>
                                 </select>
                             </div>
                             
@@ -374,7 +480,8 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize elements
@@ -398,6 +505,12 @@
             
             // Initialize chat when page loads
             initializeChat();
+
+            // Chat progress update variables
+            let assistantContainer = null;
+            let currentSection = null;
+            let sectionBuffer = '';
+            let sectionElements = {};
             
             // Load initial results
             loadResults();
@@ -411,35 +524,23 @@
             });
             
             searchButton.addEventListener('click', function() {
-                const query = searchInput.value.trim();
-                activeFilters.query = query;
                 loadResults();
             });
-            
+            // Allow search with Enter key
+            searchInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    loadResults();
+                }
+            });
+
             applyFiltersButton.addEventListener('click', function() {
-                // Get filter values
-                const serviceArea = document.getElementById('service-area-filter').value;
-                const jurisdiction = document.getElementById('jurisdiction-filter').value;
-                const price = document.getElementById('price-filter').value;
-                const mobileApp = document.getElementById('mobile-app-filter').value;
-                const justiceTech = document.getElementById('justice-tech-filter').value;
-                
-                // Update active filters
-                if (serviceArea) activeFilters.service_area = serviceArea;
-                else delete activeFilters.service_area;
-                
-                if (jurisdiction) activeFilters.jurisdiction = jurisdiction;
-                else delete activeFilters.jurisdiction;
-                
-                if (price) activeFilters.pricing = price;
-                else delete activeFilters.pricing;
-                
-                if (mobileApp) activeFilters.mobile_app_available = mobileApp;
-                else delete activeFilters.mobile_app_available;
-                
-                if (justiceTech) activeFilters.justice_tech_assn_member = justiceTech;
-                else delete activeFilters.justice_tech_assn_member;
-                
+                // Clear search input to focus only on filters if user is using filters
+                // Only do this if they haven't explicitly entered a search term
+                if (!searchInput.value.trim()) {
+                    searchInput.value = '';
+                }
+
                 loadResults();
             });
             
@@ -543,149 +644,46 @@
                     if (typingIndicator && typingIndicator.parentNode) {
                         chatContainer.removeChild(typingIndicator);
                     }
-                    
+
                     const data = JSON.parse(event.data);
-                    
+
                     if (data.type === 'response') {
-                        // First chunk - create message div
-                        if (!assistantMessageDiv) {
-                            assistantMessageDiv = document.createElement('div');
-                            assistantMessageDiv.className = 'assistant-message chat-message';
-                            assistantResponse = data.content || "";
-                            
-                            console.log("First chunk received with content:", data.content, "is_structured:", data.is_structured);
-                            
-                            // Check for direct fallback display from backend
-                            if (data.is_direct_fallback) {
-                                console.log("DIRECT FALLBACK RECEIVED (first chunk) - Bypassing structured format");
-                                // Remove XML tags for clean display
-                                let cleanContent = data.content;
-                                ["response", "summary", "recommendations", "disclaimer", "follow_up_questions", "query_analysis", "DIRECT DISPLAY"].forEach(tag => {
-                                    cleanContent = cleanContent.replace(new RegExp(`<${tag}>`, 'g'), '');
-                                    cleanContent = cleanContent.replace(new RegExp(`</${tag}>`, 'g'), '');
-                                });
-                                // Format with paragraphs
-                                cleanContent = cleanContent.split('\n\n')
-                                    .filter(para => para.trim().length > 0)
-                                    .map(para => `<p>${para.trim()}</p>`)
-                                    .join('');
-                                
-                                assistantMessageDiv.innerHTML = `<div class="direct-fallback">${cleanContent}</div>`;
-                            }
-                            // If this is tagged as structured content or contains XML tags, show a loading indicator
-                            else if (data.is_structured || 
-                                (data.content && (
-                                    data.content.includes("<response>") || 
-                                    data.content.includes("<summary>") || 
-                                    data.content.includes("<recommendations>") || 
-                                    data.content.includes("<disclaimer>") || 
-                                    data.content.includes("<follow_up_questions>")
-                                ))) {
-                                assistantMessageDiv.innerHTML = `<div class="structured-loading">
-                                    <p class="mb-0">Preparing your recommendations...</p>
-                                    <div class="typing-indicator mt-2"><span></span><span></span><span></span></div>
-                                </div>`;
-                            } else {
-                                assistantMessageDiv.innerHTML = `<p class="mb-0">${data.content || ""}</p>`;
-                            }
-                            chatContainer.appendChild(assistantMessageDiv);
-                        } else {
-                            // Update existing message with new content
-                            assistantResponse += data.content || "";
-                            
-                            console.log("Additional chunk received:", data.content, "is_structured:", data.is_structured);
-                            
-                            // Check for direct fallback display from backend
-                            if (data.is_direct_fallback) {
-                                console.log("DIRECT FALLBACK RECEIVED - Bypassing structured format");
-                                // Remove XML tags for clean display
-                                let cleanContent = data.content;
-                                ["response", "summary", "recommendations", "disclaimer", "follow_up_questions", "query_analysis", "DIRECT DISPLAY"].forEach(tag => {
-                                    cleanContent = cleanContent.replace(new RegExp(`<${tag}>`, 'g'), '');
-                                    cleanContent = cleanContent.replace(new RegExp(`</${tag}>`, 'g'), '');
-                                });
-                                // Format with paragraphs
-                                cleanContent = cleanContent.split('\n\n')
-                                    .filter(para => para.trim().length > 0)
-                                    .map(para => `<p>${para.trim()}</p>`)
-                                    .join('');
-                                
-                                assistantMessageDiv.innerHTML = `<div class="direct-fallback">${cleanContent}</div>`;
-                            }
-                            // If this is tagged as structured content or contains XML tags, show a loading indicator
-                            else if (data.is_structured || 
-                                assistantResponse.includes("<response>") || 
-                                assistantResponse.includes("<summary>") || 
-                                assistantResponse.includes("<recommendations>") || 
-                                assistantResponse.includes("<disclaimer>") || 
-                                assistantResponse.includes("<follow_up_questions>")) {
-                                
-                                // Only update if we're not already showing the loading indicator
-                                if (!assistantMessageDiv.querySelector('.structured-loading')) {
-                                    assistantMessageDiv.innerHTML = `<div class="structured-loading">
-                                        <p class="mb-0">Preparing your recommendations...</p>
-                                        <div class="typing-indicator mt-2"><span></span><span></span><span></span></div>
-                                    </div>`;
-                                }
-                            } else {
-                                assistantMessageDiv.innerHTML = `<p class="mb-0">${assistantResponse}</p>`;
-                            }
+                        // First chunk — initialize container if needed
+                        if (!assistantContainer) {
+                            assistantContainer = document.createElement('div');
+                            assistantContainer.className = 'assistant-message chat-message structured-response';
+                            chatContainer.appendChild(assistantContainer);
                         }
-                        
-                        // Scroll to bottom of chat
+
+                        // Buffer incoming content
+                        sectionBuffer += data.content || "";
+
+                        // Parse buffer for sections
+                        parseAndRenderSections(sectionBuffer);
+
                         chatContainer.scrollTop = chatContainer.scrollHeight;
                     } else if (data.type === 'done') {
                         console.log("DONE EVENT RECEIVED");
-                        
+
+                        // Final clean-up of any leftover content
+                        if (sectionBuffer) {
+                            parseAndRenderSections(sectionBuffer, true); // Force flush
+                        }
+
                         // Clear safety timeout if it exists
                         if (typeof safetyTimeout !== 'undefined') {
                             clearTimeout(safetyTimeout);
                         }
-                        
-                        // Close the connection when done
+
+                        // Reset variables for next message
+                        assistantContainer = null;
+                        currentSection = null;
+                        sectionBuffer = '';
+                        sectionElements = {};
+
+                        // Close connection
                         eventSource.close();
-                        
-                        // Keep it extremely simple - just display the content
-                        try {
-                            // Get complete response from done event if available, otherwise use accumulated
-                            const completeResponse = data.content || assistantResponse;
-                        
-                            // Make sure we have a valid message div to display in
-                            if (!assistantMessageDiv) {
-                                assistantMessageDiv = document.createElement('div');
-                                assistantMessageDiv.className = 'assistant-message chat-message';
-                                chatContainer.appendChild(assistantMessageDiv);
-                            }
-                            
-                            // Clean the response of any XML tags for display
-                            let cleanResponse = completeResponse || "";
-                            const xmlTags = ["response", "summary", "recommendations", "disclaimer", "follow_up_questions", "query_analysis"];
-                            xmlTags.forEach(tag => {
-                                cleanResponse = cleanResponse.replace(new RegExp(`<${tag}>`, 'g'), '<strong>' + tag.charAt(0).toUpperCase() + tag.slice(1) + ':</strong> ');
-                                cleanResponse = cleanResponse.replace(new RegExp(`</${tag}>`, 'g'), '<br><br>');
-                            });
-                            
-                            // Basic HTML formatting for readability
-                            cleanResponse = cleanResponse.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
-                            
-                            // Display content
-                            assistantMessageDiv.innerHTML = `<div>${cleanResponse}</div>`;
-                            
-                            // Force a scroll to make sure we can see it
-                            chatContainer.scrollTop = chatContainer.scrollHeight;
-                            
-                        } catch (error) {
-                            console.error("Error displaying content:", error);
-                            
-                            // Emergency fallback display
-                            if (assistantMessageDiv) {
-                                assistantMessageDiv.innerHTML = `<div>
-                                    <p>Error displaying structured content: ${error.message}</p>
-                                    <p>${assistantResponse.replace(/<[^>]*>/g, '')}</p>
-                                </div>`;
-                            }
-                        }
-                        
+
                         // Update suggested filters
                         if (data.suggested_filters && data.suggested_filters.length > 0) {
                             updateSuggestedFilters(data.suggested_filters);
@@ -715,6 +713,116 @@
                         addAssistantMessage('Sorry, I encountered an error connecting to the server. Please try again.');
                     }
                 };
+            }
+
+            const SECTION_TAGS = ['summary', 'recommendations', 'disclaimer', 'follow_up_questions'];
+
+            function createSectionElement(section) {
+                const sectionDiv = document.createElement('div');
+                const title = section.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                sectionDiv.className = `${section}-section`;
+
+                // Initial loading state
+                sectionDiv.innerHTML = `
+                    <h6><strong>${title}:</strong></h6>
+                    <div class="section-content">
+                        <div class="typing-indicator"><span></span><span></span><span></span></div>
+                    </div>
+                `;
+
+                assistantContainer.appendChild(sectionDiv);
+                sectionElements[section] = sectionDiv.querySelector('.section-content');
+            }
+
+            function appendToSection(text) {
+                if (!currentSection || !sectionElements[currentSection]) return;
+
+                const el = sectionElements[currentSection];
+                const convertedMarkdown = marked.parse(text);
+                // const sanitizedText = escapeHtml(convertedMarkdown);
+                // const html = convertedMarkdown.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+
+                // Replace loader with content
+                if (el.querySelector('.typing-indicator')) {
+                    el.innerHTML = convertedMarkdown;
+                } else {
+                    el.innerHTML += convertedMarkdown;
+                }
+            }
+
+            function finalizeCurrentSection() {
+                delete sectionElements[currentSection];
+            }
+
+            function parseAndRenderSections(content, forceFlush = false) {
+                let idx = 0;
+                let len = content.length;
+                let openTagPattern = /<([a-zA-Z_]+)>/;
+                let closeTagPattern = /<\/([a-zA-Z_]+)>/;
+
+                while (idx < len) {
+                    const openMatch = content.slice(idx).match(openTagPattern);
+                    const closeMatch = content.slice(idx).match(closeTagPattern);
+
+                    // Determine the next meaningful token
+                    if (openMatch && (!closeMatch || openMatch.index <= closeMatch.index)) {
+                        const tagName = openMatch[1];
+                        const tagStart = idx + openMatch.index;
+                        const tagEnd = tagStart + openMatch[0].length;
+
+                        if (SECTION_TAGS.includes(tagName)) {
+                            // End previous section if any
+                            if (currentSection) {
+                                finalizeCurrentSection();
+                            }
+
+                            // Start new section
+                            currentSection = tagName;
+                            createSectionElement(currentSection);
+                        }
+
+                        // Move past the tag
+                        idx = tagEnd;
+                    } else if (closeMatch) {
+                        const tagName = closeMatch[1];
+                        const tagStart = idx + closeMatch.index;
+                        const tagEnd = tagStart + closeMatch[0].length;
+
+                        if (tagName === currentSection) {
+                            // Finalize the section
+                            finalizeCurrentSection();
+                            currentSection = null;
+                        }
+
+                        // Move past the tag
+                        idx = tagEnd;
+                    } else {
+                        // Regular content — append to current section
+                        const sliceEnd = closeMatch ? idx + closeMatch.index : len;
+                        const text = content.slice(idx, sliceEnd);
+                        if (text.trim()) {
+                            appendToSection(text);
+                        }
+
+                        idx = sliceEnd;
+                    }
+                }
+
+                // If forced flush and content remains, dump it as-is
+                if (forceFlush && content.trim()) {
+                    if (currentSection) {
+                        appendToSection(content);
+                        finalizeCurrentSection();
+                    } else {
+                        // Fallback: raw output if no section is open
+                        const fallbackDiv = document.createElement('div');
+                        fallbackDiv.innerHTML = `<p>${escapeHtml(content)}</p>`;
+                        assistantContainer.appendChild(fallbackDiv);
+                    }
+                }
+
+                // Truncate buffer
+                sectionBuffer = content.slice(idx);
             }
             
             // Function to add a user message to the chat
@@ -747,10 +855,28 @@
                 });
             }
             
+            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
             // Function to load results based on filters
             function loadResults() {
                 // Show loading state
                 resultsContainer.innerHTML = '<div class="col-12 text-center py-5"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Loading results...</p></div>';
+                
+                // Collect all filter values
+                const serviceArea = document.getElementById('service-area-filter').value;
+                const jurisdiction = document.getElementById('jurisdiction-filter').value;
+                const price = document.getElementById('price-filter').value;
+                const mobileApp = document.getElementById('mobile-app-filter').value;
+                const justiceTech = document.getElementById('justice-tech-filter').value;
+                const query = document.getElementById('search-input').value.trim();
+                
+                // Build filter object
+                const filters = {};
+                if (serviceArea) filters.service_area = serviceArea;
+                if (jurisdiction) filters.jurisdiction = jurisdiction;
+                if (price) filters.pricing = price;
+                if (mobileApp) filters.mobile_app_available = mobileApp;
+                if (justiceTech) filters.justice_tech_assn_member = justiceTech;
                 
                 fetch('/api/search', {
                     method: 'POST',
@@ -758,8 +884,8 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        query: activeFilters.query || '',
-                        filters: activeFilters
+                        query: query,
+                        filters: filters
                     })
                 })
                 .then(response => response.json())
@@ -785,20 +911,46 @@
                             ? provider.jurisdiction.join(', ') 
                             : provider.jurisdiction.split(', ').join(', ');
                         
+                        // Process the service_area into a formatted HTML string
+                        const areas = provider.service_area.split(',');
+                        const displayedAreas = areas.slice(0, 5); // Show first 5
+                        const remaining = areas.length - 5;
+                        let serviceAreaHTML = displayedAreas
+                            .map(area => `<span class="badge bg-info me-1">${area}</span>`)
+                            .join('');
+
+                        if (remaining > 0) {
+                            serviceAreaHTML += `<span class="badge bg-info me-1" data-bs-toggle="tooltip" title="${areas.join(', ')}">+${remaining}</span>`;
+                        }
+                        // Process the problem_that_product_solves into a formatted HTML string
+                        const problems = provider.problem_that_product_solves.split(',');
+                        const displayedProblems = problems.slice(0, 5); // Show first 5
+                        const remainingProbs = problems.length - 5;
+                        let problemAreasHTML = displayedProblems
+                            .map(prob => `<span class="badge bg-primary me-1">${prob}</span>`)
+                            .join('');
+
+                        if (remainingProbs > 0) {
+                            problemAreasHTML += `<span class="badge bg-primary me-1" data-bs-toggle="tooltip" title="${problems.join(', ')}">+${remainingProbs}</span>`;
+                        }
+
+                        // Build the card HTML with the formatted service_area
                         card.innerHTML = `
                             <div class="card h-100 provider-card shadow-sm">
                                 <div class="card-body">
                                     <h5 class="card-title">${provider.product_name}</h5>
-                                    <h6 class="card-subtitle mb-2 text-muted">${provider.service_area}</h6>
-                                    <p class="card-text mb-3">${provider.problem_that_product_solves}</p>
+                                    <h6 class="card-subtitle mb-2 text-muted">${serviceAreaHTML}</h6>
+                                    <p class="card-text mb-3">${problemAreasHTML}</p>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <span class="badge bg-info">${jurisdictions}</span>
                                         <span class="badge bg-secondary">${provider.pricing}</span>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">Since ${provider.year_of_incorporation}</small>
+                                        ${provider.year_of_incorporation ? `
+                                            <small class="text-muted">Since ${provider.year_of_incorporation}</small>
+                                        ` : ''}
                                         ${provider.justice_tech_assn_member === "Yes" ? 
-                                            '<span class="badge bg-success">Justice Tech Member</span>' : ''}
+                                            '<span class="badge bg-success">Justice Tech Assn Member</span>' : ''}
                                     </div>
                                 </div>
                                 <div class="card-footer card-footer-custom text-center">
@@ -832,55 +984,75 @@
                         
                         // Format the body content
                         const modalBody = document.getElementById('modalBody');
+                        let problemAreasHTML = '';
+                        if (provider.problem_that_product_solves) {
+                            const problems = provider.problem_that_product_solves.split(',');
+                            problemAreasHTML = problems
+                                .map(prob => `<span class="badge bg-primary me-1">${prob}</span>`)
+                                .join('');
+                        }
                         modalBody.innerHTML = `
                             <div class="row">
                                 <div class="col-md-8">
-                                    <h6 class="fw-bold">Elevator Pitch</h6>
-                                    <p>${provider.elevator_pitch}</p>
-                                    
-                                    <h6 class="fw-bold mt-4">Problem Solved</h6>
-                                    <p>${provider.problem_that_product_solves}</p>
-                                    
-                                    <h6 class="fw-bold mt-4">Primary Users</h6>
-                                    <p>${provider.primary_users}</p>
-                                    
-                                    <h6 class="fw-bold mt-4">How Clients Access Services</h6>
-                                    <p>${provider.clients_access_services_by}</p>
+                                    ${provider.elevator_pitch ? `
+                                        <h6 class="fw-bold">Elevator Pitch</h6>
+                                        <p>${provider.elevator_pitch}</p>
+                                    ` : ''}
+
+                                    ${provider.problem_that_product_solves ? `
+                                        <h6 class="fw-bold mt-4">Problem Solved</h6>
+                                        <p>${problemAreasHTML}</p>
+                                    ` : ''}
+
+                                    ${provider.primary_users ? `
+                                        <h6 class="fw-bold mt-4">Primary Users</h6>
+                                        <p>${provider.primary_users}</p>
+                                    ` : ''}
+
+                                    ${provider.clients_access_services_by ? `
+                                        <h6 class="fw-bold mt-4">How Clients Access Services</h6>
+                                        <p>${provider.clients_access_services_by}</p>
+                                    ` : ''}
                                 </div>
                                 <div class="col-md-4">
                                     <div class="card shadow-sm mb-3">
                                         <div class="card-body">
                                             <h6 class="fw-bold">Contact</h6>
-                                            <p class="mb-0">${provider.public_contact_information}</p>
+                                            ${provider.public_contact_information ? `
+                                                <p class="mb-1">${provider.public_contact_information}</p>
+                                            ` : ''}
+                                            ${provider.website ? `
+                                                <a href="${provider.website}" class="mb-0" target="_blank" rel="noopener noreferrer">${provider.website}</a>
+                                            ` : ''}
                                         </div>
                                     </div>
-                                    
+
                                     <div class="card shadow-sm mb-3">
                                         <div class="card-body">
                                             <h6 class="fw-bold">Company Info</h6>
-                                            <p class="mb-1"><strong>Type:</strong> ${provider.type_of_company}</p>
-                                            <p class="mb-1"><strong>Founded:</strong> ${provider.year_of_incorporation}</p>
-                                            <p class="mb-0"><strong>Justice Tech Member:</strong> ${provider.justice_tech_assn_member}</p>
+                                            ${provider.type_of_company ? `
+                                                <p class="mb-1"><strong>Type:</strong> ${provider.type_of_company}</p>
+                                            ` : ''}
+                                            ${provider.year_of_incorporation ? `
+                                                <p class="mb-1"><strong>Year:</strong> ${provider.year_of_incorporation}</p>
+                                            ` : ''}
+                                            ${provider.justice_tech_annual_member ? `
+                                                <p class="mb-1"><strong>Member:</strong> ${provider.justice_tech_annual_member}</p>
+                                            ` : ''}
                                         </div>
                                     </div>
-                                    
-                                    <div class="card shadow-sm">
+
+                                    <div class="card shadow-sm mb-3">
                                         <div class="card-body">
                                             <h6 class="fw-bold">Features</h6>
-                                            <p class="mb-1"><strong>Mobile App:</strong> ${provider.mobile_app_available}</p>
-                                            <p class="mb-1"><strong>App Required:</strong> ${provider.app_use_required}</p>
-                                            <p class="mb-0"><strong>Pricing:</strong> ${provider.pricing}</p>
+                                            ${provider.mobile_app_available ? `
+                                                <p class="mb-1"><strong>Mobile App:</strong> ${provider.mobile_app_available}</p>
+                                            ` : ''}
+                                            ${provider.web_portal_available ? `
+                                                <p class="mb-1"><strong>Web Portal:</strong> ${provider.web_portal_available}</p>
+                                            ` : ''}
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            
-                            <div class="row mt-4">
-                                <div class="col-12">
-                                    <div class="alert alert-info">
-                                        <strong>Last Updated:</strong> ${provider.last_updated}
-                                    </div>
-                                    <p class="text-muted small">Note: This information is provided as a public service. Please contact the provider directly to verify details.</p>
                                 </div>
                             </div>
                         `;
