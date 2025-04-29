@@ -118,20 +118,19 @@ def initialize_chat():
                     # Store the session ID
                     session_id = data.get("session_id")
                     chat_sessions[session_id] = {"started_at": datetime.now().isoformat()}
-                    
-                    # Get user's location
-                    user_location = get_user_location()
-                    
+
                     # Customize initial message based on location
                     initial_message = "Hello! I'm your legal tech directory assistant. How can I help you find the right legal technology solution? Please tell me about your legal issue, jurisdiction, and any other relevant factors."
-                    
-                    # Add location info if available
+
+                    # Get user's location
+                    user_location = get_user_location()
                     if user_location:
-                        initial_message = f"It looks like you're in {user_location}. If this is incorrect, let me know! " + initial_message
-                    
+                        chat_sessions[session_id]["location"] = user_location
+                
                     return jsonify({
                         "session_id": session_id,
-                        "initial_message": initial_message
+                        "initial_message": initial_message,
+                        "detected_location": user_location,
                     })
             
             # If we get here, something went wrong
@@ -140,6 +139,17 @@ def initialize_chat():
     except Exception as e:
         logger.error(f"Error initializing chat: {e}")
         return jsonify({"error": "Failed to connect to backend API"}), 503
+
+@app.route('/api/update_location', methods=['POST'])
+def update_location():
+    session_id = request.json.get('session_id')
+    new_location = request.json.get('location')
+    
+    if session_id in chat_sessions:
+        chat_sessions[session_id]['location'] = new_location
+        logger.info("Location updated")
+        return jsonify({"status": "Location updated"})
+    return jsonify({"error": "Invalid session"}), 400
 
 @app.route('/api/chat_stream', methods=['GET'])
 def chat_stream():
@@ -162,7 +172,7 @@ def chat_stream():
                     "chat_session_stream",
                     json={
                         "session_id": session_id,
-                        "message": user_message,
+                        "message": user_message + (f" I am in {session['location']}." if session.get('location') else ""),
                         "user": {"email": "test@test.com", "firebase_uid": "idk"}
                     },
                     stream=True
