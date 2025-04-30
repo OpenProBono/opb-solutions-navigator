@@ -236,6 +236,22 @@
                 transform: translateY(0);
             }
         }
+        .solution-details {
+            max-height: 300px;
+            overflow-y: auto;
+            transition: max-height 0.3s ease-out;
+        }
+        .solution-details[style*="display: block"] {
+            max-height: 300px;
+        }
+        .solution-details[style*="display: none"] {
+            max-height: 0;
+        }
+        .solution-details pre {
+            white-space: pre-wrap; /* Allow line breaks */
+            font-family: monospace;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
@@ -533,6 +549,7 @@
             let currentSection = null;
             let sectionBuffer = '';
             let sectionElements = {};
+            let thinkingContainer = null;
             
             // Load initial results
             loadResults();
@@ -699,8 +716,38 @@
                     }
 
                     const data = JSON.parse(event.data);
+                    if (data.type === 'solution_evaluation') {
+                        // Create container if it doesn't exist
+                        if (!thinkingContainer) {
+                            thinkingContainer = document.createElement('div');
+                            thinkingContainer.className = 'assistant-message chat-message bg-light border border-primary-subtle';
+                            thinkingContainer.innerHTML = `
+                                <div class="d-flex align-items-center mb-2">
+                                    <strong class="text-primary"><i class="bi bi-robot"></i> <i class="bi bi-chat-dots"></i> Thinking...</strong>
+                                    <button class="btn btn-sm btn-outline-primary ms-auto toggle-solution">Show Details</button>
+                                </div>
+                                <div class="solution-details" style="display: none;">
+                                    <pre class="bg-body-secondary p-2 rounded small"></pre>
+                                </div>
+                            `;
+                            chatContainer.appendChild(thinkingContainer);
+                            
+                            // Add toggle functionality
+                            thinkingContainer.querySelector('.toggle-solution').addEventListener('click', () => {
+                                const details = thinkingContainer.querySelector('.solution-details');
+                                details.style.display = details.style.display === 'none' ? 'block' : 'none';
+                            });
+                        }
 
-                    if (data.type === 'response') {
+                        // Append new content to the preformatted block
+                        const pre = thinkingContainer.querySelector('pre');
+                        pre.innerHTML += escapeHtml(data.content) + '\n';
+                        
+                        // Auto-scroll if expanded
+                        if (thinkingContainer.querySelector('.solution-details').style.display === 'block') {
+                            pre.scrollTop = pre.scrollHeight;
+                        }
+                    } else if (data.type === 'response') {
                         // First chunk — initialize container if needed
                         if (!assistantContainer) {
                             assistantContainer = document.createElement('div');

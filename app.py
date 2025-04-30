@@ -190,52 +190,62 @@ def chat_stream():
                                     
                                     if data_json.get("type") == "response":
                                         content = data_json.get("content", "")
-                                        # Accumulate the complete response
-                                        complete_response += content
                                         
-                                        # Check for and handle query analysis tags - these should be filtered out
+                                        # Handle solution_evaluation streaming
                                         if "<solution_evaluation>" in content or in_solution_evaluation:
                                             if "<solution_evaluation>" in content and not in_solution_evaluation:
+                                                # Start of solution_evaluation
                                                 in_solution_evaluation = True
-                                                solution_evaluation_buffer = content[content.find("<solution_evaluation>"):]
-                                                clean_content = content[:content.find("<solution_evaluation>")]
-                                            elif "</solution_evaluation>" in content and in_solution_evaluation:
-                                                in_solution_evaluation = False
-                                                solution_evaluation_buffer += content[:content.find("</solution_evaluation>") + len("</solution_evaluation>")]
-                                                clean_content = content[content.find("</solution_evaluation>") + len("</solution_evaluation>"):]
-                                            elif in_solution_evaluation:
-                                                solution_evaluation_buffer += content
-                                                clean_content = ""
-                                            else:
-                                                clean_content = content
+                                                start_idx = content.find("<solution_evaluation>")
+                                                before_tag = content[:start_idx]
+                                                after_tag = content[start_idx + len("<solution_evaluation>"):]
                                                 
-                                            # Only send non-empty, clean content to the client
-                                            if clean_content.strip():
-                                                data_json["content"] = clean_content
-                                                yield f"data: {json.dumps(data_json)}\n\n"
-                                        # Check if this is part of the structured response - we'll just accumulate, not display directly
-                                        # as it will be processed and displayed properly when "done" is received
-                                        elif "<response>" in content or "</response>" in content or "<summary>" in content or "</summary>" in content or "<recommendations>" in content or "</recommendations>" in content or "<disclaimer>" in content or "</disclaimer>" in content or "<follow_up_questions>" in content or "</follow_up_questions>" in content:
-                                            # For structured response parts, we'll just send a special indicator
-                                            # The actual content will still be accumulated in complete_response
-                                            # But we'll set is_structured flag to inform the frontend this is structured content
-                                            data_json["is_structured"] = True
+                                                # Send non-solution content before the tag
+                                                if before_tag.strip():
+                                                    data_json["content"] = before_tag
+                                                    yield f"data: {json.dumps(data_json)}\n\n"
+                                                
+                                                # Send content after the opening tag
+                                                if after_tag.strip():
+                                                    yield f"data: {{\"type\": \"solution_evaluation\", \"content\": {json.dumps(after_tag)}}}\n\n"
                                             
-                                            # Always keep the original content so the client can accumulate it
-                                            # for proper extraction of sections later if needed
-                                            # The client will just show the loading indicator while accumulating
+                                            elif "</solution_evaluation>" in content and in_solution_evaluation:
+                                                # End of solution_evaluation
+                                                end_idx = content.find("</solution_evaluation>")
+                                                solution_part = content[:end_idx]
+                                                after_tag = content[end_idx + len("</solution_evaluation>"):]
                                                 
+                                                # Send content before the closing tag
+                                                if solution_part.strip():
+                                                    yield f"data: {{\"type\": \"solution_evaluation\", \"content\": {json.dumps(solution_part)}}}\n\n"
+                                                
+                                                # Reset state
+                                                in_solution_evaluation = False
+                                                
+                                                # Send content after the closing tag
+                                                if after_tag.strip():
+                                                    data_json["content"] = after_tag
+                                                    yield f"data: {json.dumps(data_json)}\n\n"
+                                            
+                                            elif in_solution_evaluation:
+                                                # Middle of solution_evaluation - stream it directly
+                                                if content.strip():
+                                                    yield f"data: {{\"type\": \"solution_evaluation\", \"content\": {json.dumps(content)}}}\n\n"
+                                        
+                                        # Handle structured response tags
+                                        elif any(tag in content for tag in ["<response>", "</response>", "<summary>", "</summary>"]):
+                                            # Existing structured response handling
+                                            data_json["is_structured"] = True
                                             yield f"data: {json.dumps(data_json)}\n\n"
+                                        
                                         else:
-                                            # Forward the chunk to the client as is
+                                            # Regular response content
                                             yield f"data: {line}\n\n"
                                     elif data_json.get("type") == "done":
-                                        # When done, add suggested filters and structure the content
-                                        # First remove any query analysis from the complete response
-                                        if "<solution_evaluation>" in complete_response and "</solution_evaluation>" in complete_response:
-                                            solution_evaluation = complete_response[complete_response.find("<solution_evaluation>"):complete_response.find("</solution_evaluation>") + len("</solution_evaluation>")]
-                                            complete_response = complete_response.replace(solution_evaluation, "")
-                                        
+                                        # Finalize solution_evaluation if unclosed
+                                        if in_solution_evaluation and solution_evaluation_buffer:
+                                            yield f"data: {{\"type\": \"solution_evaluation\", \"content\": {json.dumps(solution_evaluation_buffer)}}}\n\n"
+
                                         # Parse structured response parts if present
                                         response_parts = {}
                                         # Check if we have a structured response using <response> tag
