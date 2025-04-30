@@ -549,7 +549,6 @@
             let currentSection = null;
             let sectionBuffer = '';
             let sectionElements = {};
-            let thinkingContainer = null;
             
             // Load initial results
             loadResults();
@@ -696,6 +695,7 @@
                 
                 let assistantResponse = '';
                 let assistantMessageDiv = null;
+                let thinkingContainer = null;
                 
                 // Safety timeout - if no 'done' event arrives within 30 seconds, force display
                 const safetyTimeout = setTimeout(() => {
