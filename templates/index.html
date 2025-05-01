@@ -237,20 +237,25 @@
             }
         }
         .solution-details {
+            transition: max-height 0.3s ease-out;
             max-height: 300px;
             overflow-y: auto;
-            transition: max-height 0.3s ease-out;
-        }
-        .solution-details[style*="display: block"] {
-            max-height: 300px;
         }
         .solution-details[style*="display: none"] {
             max-height: 0;
         }
-        .solution-details pre {
-            white-space: pre-wrap; /* Allow line breaks */
-            font-family: monospace;
-            margin: 0;
+        .solution-details[style*="display: block"] {
+            max-height: 300px;
+        }
+        .assistant-message.chat-message.bg-light {
+            cursor: pointer;
+        }
+        .header-container {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .header-container:hover {
+            background-color: #f0f7ff;
         }
     </style>
 </head>
@@ -696,6 +701,7 @@
                 let assistantResponse = '';
                 let assistantMessageDiv = null;
                 let thinkingContainer = null;
+                let solutionStartTime = null;
                 
                 // Safety timeout - if no 'done' event arrives within 30 seconds, force display
                 const safetyTimeout = setTimeout(() => {
@@ -717,54 +723,108 @@
 
                     const data = JSON.parse(event.data);
                     if (data.type === 'solution_evaluation') {
-                        // Create container if it doesn't exist
+                        // Start timer only if not already started
+                        if (!solutionStartTime) {
+                            solutionStartTime = Date.now();
+                        }
+                        
+                        // Create container if needed
                         if (!thinkingContainer) {
                             thinkingContainer = document.createElement('div');
                             thinkingContainer.className = 'assistant-message chat-message bg-light border border-primary-subtle';
                             thinkingContainer.innerHTML = `
-                                <div class="d-flex align-items-center mb-2">
-                                    <strong class="text-primary"><i class="bi bi-robot"></i> <i class="bi bi-chat-dots"></i> Thinking...</strong>
-                                    <button class="btn btn-sm btn-outline-primary ms-auto toggle-solution">Show Details</button>
+                                <div class="header-container d-flex align-items-center mb-2">
+                                    <strong class="text-primary me-2">Thinking...</strong>
+                                    <div class="typing-indicator flex-shrink-0">
+                                        <span></span><span></span><span></span>
+                                    </div>
+                                    <i class="bi bi-chevron-down ms-auto toggle-solution" style="cursor: pointer; font-size: 1.2em;"></i>
                                 </div>
                                 <div class="solution-details" style="display: none;">
-                                    <pre class="bg-body-secondary p-2 rounded small"></pre>
+                                    <pre class="bg-body-secondary p-2 rounded small" style="white-space: pre-wrap;"></pre>
                                 </div>
                             `;
                             chatContainer.appendChild(thinkingContainer);
                             
-                            // Add toggle functionality
-                            thinkingContainer.querySelector('.toggle-solution').addEventListener('click', () => {
-                                const details = thinkingContainer.querySelector('.solution-details');
-                                details.style.display = details.style.display === 'none' ? 'block' : 'none';
+                            // Get DOM elements
+                            const headerContainer = thinkingContainer.querySelector('.header-container');
+                            const toggleButton = thinkingContainer.querySelector('.toggle-solution');
+                            const detailsContainer = thinkingContainer.querySelector('.solution-details');
+                            const preElement = thinkingContainer.querySelector('pre');
+                            
+                            // Function to handle toggle operations
+                            function handleToggle() {
+                                const isCollapsed = detailsContainer.style.display === 'none';
+                                detailsContainer.style.display = isCollapsed ? 'block' : 'none';
+                                toggleButton.classList.toggle('bi-chevron-down', !isCollapsed);
+                                toggleButton.classList.toggle('bi-chevron-up', isCollapsed);
+                                
+                                // Auto-scroll to bottom when expanding
+                                if (isCollapsed) {
+                                    requestAnimationFrame(() => {
+                                        preElement.scrollTop = preElement.scrollHeight;
+                                    });
+                                }
+                            }
+                            
+                            // Toggle on chevron click
+                            toggleButton.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                handleToggle();
+                            });
+                            
+                            // Toggle on header click
+                            headerContainer.addEventListener('click', (e) => {
+                                if (!e.target.closest('.toggle-solution')) {
+                                    handleToggle();
+                                }
                             });
                         }
-
-                        // Append new content to the preformatted block
+                        
+                        // Append content to preformatted block
                         const pre = thinkingContainer.querySelector('pre');
                         pre.innerHTML += escapeHtml(data.content) + '\n';
                         
                         // Auto-scroll if expanded
-                        if (thinkingContainer.querySelector('.solution-details').style.display === 'block') {
-                            pre.scrollTop = pre.scrollHeight;
+                        const detailsContainer = thinkingContainer.querySelector('.solution-details');
+                        if (detailsContainer.style.display === 'block') {
+                            // Use requestAnimationFrame for better timing
+                            requestAnimationFrame(() => {
+                                pre.scrollTop = pre.scrollHeight;
+                            });
                         }
                     } else if (data.type === 'response') {
-                        // First chunk — initialize container if needed
+                        // First chunk - initialize container if needed
                         if (!assistantContainer) {
                             assistantContainer = document.createElement('div');
                             assistantContainer.className = 'assistant-message chat-message structured-response';
                             chatContainer.appendChild(assistantContainer);
+                            
+                            // Finalize thinking time
+                            if (thinkingContainer && solutionStartTime) {
+                                const duration = (Date.now() - solutionStartTime) / 1000;
+                                const roundedDuration = Math.round(duration * 100) / 100;
+                                
+                                // Update thinking container header
+                                const header = thinkingContainer.querySelector('strong.text-primary');
+                                header.textContent = `Thought for ${roundedDuration.toFixed(2)} seconds.`;
+                                
+                                // Remove typing indicator from header
+                                const typingIndicator = thinkingContainer.querySelector('.typing-indicator');
+                                if (typingIndicator) {
+                                    typingIndicator.remove();
+                                }
+                                
+                                // Reset timer for next message
+                                solutionStartTime = null;
+                            }
                         }
-
+                        
                         // Buffer incoming content
                         sectionBuffer += data.content || "";
-
-                        // Parse buffer for sections
                         parseAndRenderSections(sectionBuffer);
-
                         chatContainer.scrollTop = chatContainer.scrollHeight;
                     } else if (data.type === 'done') {
-                        console.log("DONE EVENT RECEIVED");
-
                         // Final clean-up of any leftover content
                         if (sectionBuffer) {
                             parseAndRenderSections(sectionBuffer, true); // Force flush
@@ -780,6 +840,7 @@
                         currentSection = null;
                         sectionBuffer = '';
                         sectionElements = {};
+                        thinkingContainer = null;
 
                         // Close connection
                         eventSource.close();

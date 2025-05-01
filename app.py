@@ -66,7 +66,7 @@ with open('legal_tech_providers.json', 'r') as f:
     providers = json.load(f)
 
 # Configuration
-BOT_ID = "03db4f39-e3dc-45f6-af17-ffc28b852a84"
+BOT_ID = "48673b55-1e6c-45a3-afd3-dede7c0f5dc8"
 
 # In-memory session storage
 chat_sessions = {}
@@ -198,39 +198,53 @@ def chat_stream():
                                                 in_solution_evaluation = True
                                                 start_idx = content.find("<solution_evaluation>")
                                                 before_tag = content[:start_idx]
-                                                after_tag = content[start_idx + len("<solution_evaluation>"):]
+                                                after_tag = content[start_idx:]
                                                 
-                                                # Send non-solution content before the tag
                                                 if before_tag.strip():
                                                     data_json["content"] = before_tag
                                                     yield f"data: {json.dumps(data_json)}\n\n"
                                                 
-                                                # Send content after the opening tag
-                                                if after_tag.strip():
-                                                    yield f"data: {{\"type\": \"solution_evaluation\", \"content\": {json.dumps(after_tag)}}}\n\n"
-                                            
-                                            elif "</solution_evaluation>" in content and in_solution_evaluation:
-                                                # End of solution_evaluation
-                                                end_idx = content.find("</solution_evaluation>")
-                                                solution_part = content[:end_idx]
-                                                after_tag = content[end_idx + len("</solution_evaluation>"):]
+                                                solution_part = after_tag[:after_tag.find("<solution_evaluation>") + len("<solution_evaluation>")]
+                                                solution_evaluation_buffer += solution_part
+                                                content = after_tag[len(solution_part):]
+
+                                            # Finalize on <response> detection
+                                            if "<response>" in content and in_solution_evaluation:
+                                                split_idx = content.find("<response>")
+                                                solution_part = content[:split_idx]
+                                                solution_evaluation_buffer += solution_part
                                                 
-                                                # Send content before the closing tag
-                                                if solution_part.strip():
-                                                    yield f"data: {{\"type\": \"solution_evaluation\", \"content\": {json.dumps(solution_part)}}}\n\n"
-                                                
-                                                # Reset state
+                                                # Send final solution evaluation chunk
+                                                yield f"data: {{\"type\": \"solution_evaluation\", \"content\": {json.dumps(solution_evaluation_buffer)}}}\n\n"
+                                                solution_evaluation_buffer = ""
                                                 in_solution_evaluation = False
                                                 
-                                                # Send content after the closing tag
-                                                if after_tag.strip():
-                                                    data_json["content"] = after_tag
-                                                    yield f"data: {json.dumps(data_json)}\n\n"
-                                            
-                                            elif in_solution_evaluation:
-                                                # Middle of solution_evaluation - stream it directly
-                                                if content.strip():
+                                                # Process the remaining content
+                                                data_json["content"] = content[split_idx:]
+                                                yield f"data: {json.dumps(data_json)}\n\n"
+                                                continue
+
+                                            # Regular solution evaluation processing
+                                            if in_solution_evaluation:
+                                                if "</solution_evaluation>" in content:
+                                                    split_idx = content.find("</solution_evaluation>")
+                                                    solution_part = content[:split_idx]
+                                                    if solution_part.strip():
+                                                        yield f"data: {{\"type\": \"solution_evaluation\", \"content\": {json.dumps(solution_part)}}}\n\n"
+
+                                                    # Process remaining content after the tag
+                                                    split_idx += len("</solution_evaluation>")
+                                                    remaining = content[split_idx:]
+                                                    if remaining.strip():
+                                                        data_json["content"] = remaining
+                                                        yield f"data: {json.dumps(data_json)}\n\n"
+
+                                                    in_solution_evaluation = False
+                                                    solution_evaluation_buffer = ""  # Reset the buffer
+                                                else:
+                                                    # Yield only the current content
                                                     yield f"data: {{\"type\": \"solution_evaluation\", \"content\": {json.dumps(content)}}}\n\n"
+                                                    solution_evaluation_buffer += content
                                         
                                         # Handle structured response tags
                                         elif any(tag in content for tag in ["<response>", "</response>", "<summary>", "</summary>"]):
@@ -282,7 +296,6 @@ def chat_stream():
                                         
                                         # Send very simple done event with just the type and content
                                         # We'll include the structured response directly rather than trying to parse it
-                                        logger.info("Sending done event")
                                         yield f"data: {{\"type\": \"done\", \"content\": {json.dumps(complete_response)}}}\n\n"
                                     else:
                                         # Forward other message types
