@@ -66,7 +66,7 @@ with open('legal_tech_providers.json', 'r') as f:
     providers = json.load(f)
 
 # Configuration
-BOT_ID = "48673b55-1e6c-45a3-afd3-dede7c0f5dc8"
+BOT_ID = "0ee1710a-141c-4be9-8f1d-01acc121db40"
 
 # In-memory session storage
 chat_sessions = {}
@@ -177,135 +177,135 @@ def chat_stream():
                     },
                     stream=True
                 ) as r:
-                    if r.status_code == 200:
-                        # Process the streamed response
-                        complete_response = ""
-                        in_solution_evaluation = False
-                        solution_evaluation_buffer = ""
-                        
-                        for line in r.iter_lines(decode_unicode=True):
-                            if line:
-                                try:
-                                    data_json = json.loads(line)
-                                    
-                                    if data_json.get("type") == "response":
-                                        content = data_json.get("content", "")
-                                        
-                                        # Handle solution_evaluation streaming
-                                        if "<solution_evaluation>" in content or in_solution_evaluation:
-                                            if "<solution_evaluation>" in content and not in_solution_evaluation:
-                                                # Start of solution_evaluation
-                                                in_solution_evaluation = True
-                                                start_idx = content.find("<solution_evaluation>")
-                                                before_tag = content[:start_idx]
-                                                after_tag = content[start_idx:]
-                                                
-                                                if before_tag.strip():
-                                                    data_json["content"] = before_tag
-                                                    yield f"data: {json.dumps(data_json)}\n\n"
-                                                
-                                                solution_part = after_tag[:after_tag.find("<solution_evaluation>") + len("<solution_evaluation>")]
-                                                solution_evaluation_buffer += solution_part
-                                                content = after_tag[len(solution_part):]
-
-                                            # Finalize on <response> detection
-                                            if "<response>" in content and in_solution_evaluation:
-                                                split_idx = content.find("<response>")
-                                                solution_part = content[:split_idx]
-                                                solution_evaluation_buffer += solution_part
-                                                
-                                                # Send final solution evaluation chunk
-                                                yield f"data: {{\"type\": \"solution_evaluation\", \"content\": {json.dumps(solution_evaluation_buffer)}}}\n\n"
-                                                solution_evaluation_buffer = ""
-                                                in_solution_evaluation = False
-                                                
-                                                # Process the remaining content
-                                                data_json["content"] = content[split_idx:]
-                                                yield f"data: {json.dumps(data_json)}\n\n"
-                                                continue
-
-                                            # Regular solution evaluation processing
-                                            if in_solution_evaluation:
-                                                if "</solution_evaluation>" in content:
-                                                    split_idx = content.find("</solution_evaluation>")
-                                                    solution_part = content[:split_idx]
-                                                    if solution_part.strip():
-                                                        yield f"data: {{\"type\": \"solution_evaluation\", \"content\": {json.dumps(solution_part)}}}\n\n"
-
-                                                    # Process remaining content after the tag
-                                                    split_idx += len("</solution_evaluation>")
-                                                    remaining = content[split_idx:]
-                                                    if remaining.strip():
-                                                        data_json["content"] = remaining
-                                                        yield f"data: {json.dumps(data_json)}\n\n"
-
-                                                    in_solution_evaluation = False
-                                                    solution_evaluation_buffer = ""  # Reset the buffer
-                                                else:
-                                                    # Yield only the current content
-                                                    yield f"data: {{\"type\": \"solution_evaluation\", \"content\": {json.dumps(content)}}}\n\n"
-                                                    solution_evaluation_buffer += content
-                                        
-                                        # Handle structured response tags
-                                        elif any(tag in content for tag in ["<response>", "</response>", "<summary>", "</summary>"]):
-                                            # Existing structured response handling
-                                            data_json["is_structured"] = True
-                                            yield f"data: {json.dumps(data_json)}\n\n"
-                                        
-                                        else:
-                                            # Regular response content
-                                            yield f"data: {line}\n\n"
-                                    elif data_json.get("type") == "done":
-                                        # Finalize solution_evaluation if unclosed
-                                        if in_solution_evaluation and solution_evaluation_buffer:
-                                            yield f"data: {{\"type\": \"solution_evaluation\", \"content\": {json.dumps(solution_evaluation_buffer)}}}\n\n"
-
-                                        # Parse structured response parts if present
-                                        response_parts = {}
-                                        # Check if we have a structured response using <response> tag
-                                        if "<response>" in complete_response and "</response>" in complete_response:
-                                            response_content = complete_response[complete_response.find("<response>") + len("<response>"):
-                                                                             complete_response.find("</response>")]
-                                            
-                                            # Extract each section within the response
-                                            for section in ["summary", "recommendations", "disclaimer", "follow_up_questions"]:
-                                                if f"<{section}>" in response_content and f"</{section}>" in response_content:
-                                                    start_tag = f"<{section}>"
-                                                    end_tag = f"</{section}>"
-                                                    content = response_content[response_content.find(start_tag) + len(start_tag):
-                                                                              response_content.find(end_tag)]
-                                                    response_parts[section] = content.strip()
-                                        # For backward compatibility, also check for sections directly
-                                        else:
-                                            for section in ["summary", "recommendations", "disclaimer", "follow_up_questions"]:
-                                                if f"<{section}>" in complete_response and f"</{section}>" in complete_response:
-                                                    start_tag = f"<{section}>"
-                                                    end_tag = f"</{section}>"
-                                                    content = complete_response[complete_response.find(start_tag) + len(start_tag):
-                                                                               complete_response.find(end_tag)]
-                                                    response_parts[section] = content.strip()
-                                                    
-                                        # Check if we found any structured parts
-                                        if len(response_parts) == 0:
-                                            # No structured parts found, include the full response for backward compatibility
-                                            # Remove any XML tags remaining in the response
-                                            clean_response = complete_response
-                                            for tag in ["response", "summary", "recommendations", "disclaimer", "follow_up_questions"]:
-                                                clean_response = clean_response.replace(f"<{tag}>", "").replace(f"</{tag}>", "")
-                                            response_parts["summary"] = clean_response.strip()
-                                        
-                                        # Send very simple done event with just the type and content
-                                        # We'll include the structured response directly rather than trying to parse it
-                                        yield f"data: {{\"type\": \"done\", \"content\": {json.dumps(complete_response)}}}\n\n"
-                                    else:
-                                        # Forward other message types
-                                        yield f"data: {line}\n\n"
-                                except json.JSONDecodeError:
-                                    logger.error(f"Invalid JSON in SSE data: {line}")
-                                    continue
-                    else:
+                    if r.status_code != 200:
                         logger.error(f"Error in streaming API: {r.status_code} | {r.text}")
                         yield f"data: {{\"type\": \"error\", \"message\": \"Failed to connect to backend API (status {r.status_code})\"}}\n\n"
+                        return
+                    # Process the streamed response
+                    complete_response = ""
+                    in_query_analysis = False
+                    query_analysis_buffer = ""
+                    
+                    for line in r.iter_lines(decode_unicode=True):
+                        if not line:
+                            continue
+                        try:
+                            data_json = json.loads(line)
+                            if data_json.get("type") == "response":
+                                content = data_json.get("content", "")
+                                
+                                # Handle query_analysis streaming
+                                if "<query_analysis>" in content or in_query_analysis:
+                                    if "<query_analysis>" in content and not in_query_analysis:
+                                        # Start of query_analysis
+                                        in_query_analysis = True
+                                        start_idx = content.find("<query_analysis>")
+                                        before_tag = content[:start_idx]
+                                        after_tag = content[start_idx:]
+                                        
+                                        if before_tag.strip():
+                                            data_json["content"] = before_tag
+                                            yield f"data: {json.dumps(data_json)}\n\n"
+                                        
+                                        solution_part = after_tag[:after_tag.find("<query_analysis>") + len("<query_analysis>")]
+                                        query_analysis_buffer += solution_part
+                                        content = after_tag[len(solution_part):]
+
+                                    # Finalize on <response> detection
+                                    if "<response>" in content and in_query_analysis:
+                                        split_idx = content.find("<response>")
+                                        solution_part = content[:split_idx]
+                                        query_analysis_buffer += solution_part
+                                        
+                                        # Send final solution evaluation chunk
+                                        yield f"data: {{\"type\": \"query_analysis\", \"content\": {json.dumps(query_analysis_buffer)}}}\n\n"
+                                        query_analysis_buffer = ""
+                                        in_query_analysis = False
+                                        
+                                        # Process the remaining content
+                                        data_json["content"] = content[split_idx:]
+                                        yield f"data: {json.dumps(data_json)}\n\n"
+                                        continue
+
+                                    # Regular solution evaluation processing
+                                    if in_query_analysis:
+                                        if "</query_analysis>" in content:
+                                            split_idx = content.find("</query_analysis>")
+                                            solution_part = content[:split_idx]
+                                            if solution_part.strip():
+                                                yield f"data: {{\"type\": \"query_analysis\", \"content\": {json.dumps(solution_part)}}}\n\n"
+
+                                            # Process remaining content after the tag
+                                            split_idx += len("</query_analysis>")
+                                            remaining = content[split_idx:]
+                                            if remaining.strip():
+                                                data_json["content"] = remaining
+                                                yield f"data: {json.dumps(data_json)}\n\n"
+
+                                            in_query_analysis = False
+                                            query_analysis_buffer = ""  # Reset the buffer
+                                        else:
+                                            # Yield only the current content
+                                            yield f"data: {{\"type\": \"query_analysis\", \"content\": {json.dumps(content)}}}\n\n"
+                                            query_analysis_buffer += content
+                                
+                                # Handle structured response tags
+                                elif any(tag in content for tag in ["<response>", "</response>", "<summary>", "</summary>"]):
+                                    # Existing structured response handling
+                                    data_json["is_structured"] = True
+                                    yield f"data: {json.dumps(data_json)}\n\n"
+                                
+                                else:
+                                    # Regular response content
+                                    yield f"data: {line}\n\n"
+                            elif data_json.get("type") == "done":
+                                # Finalize query_analysis if unclosed
+                                if in_query_analysis and query_analysis_buffer:
+                                    yield f"data: {{\"type\": \"query_analysis\", \"content\": {json.dumps(query_analysis_buffer)}}}\n\n"
+
+                                # Parse structured response parts if present
+                                response_parts = {}
+                                # Check if we have a structured response using <response> tag
+                                if "<response>" in complete_response and "</response>" in complete_response:
+                                    response_content = complete_response[complete_response.find("<response>") + len("<response>"):
+                                                                        complete_response.find("</response>")]
+                                    
+                                    # Extract each section within the response
+                                    for section in ["summary", "recommendations", "disclaimer", "follow_up_questions"]:
+                                        if f"<{section}>" in response_content and f"</{section}>" in response_content:
+                                            start_tag = f"<{section}>"
+                                            end_tag = f"</{section}>"
+                                            content = response_content[response_content.find(start_tag) + len(start_tag):
+                                                                        response_content.find(end_tag)]
+                                            response_parts[section] = content.strip()
+                                # For backward compatibility, also check for sections directly
+                                else:
+                                    for section in ["summary", "recommendations", "disclaimer", "follow_up_questions"]:
+                                        if f"<{section}>" in complete_response and f"</{section}>" in complete_response:
+                                            start_tag = f"<{section}>"
+                                            end_tag = f"</{section}>"
+                                            content = complete_response[complete_response.find(start_tag) + len(start_tag):
+                                                                        complete_response.find(end_tag)]
+                                            response_parts[section] = content.strip()
+                                            
+                                # Check if we found any structured parts
+                                if len(response_parts) == 0:
+                                    # No structured parts found, include the full response for backward compatibility
+                                    # Remove any XML tags remaining in the response
+                                    clean_response = complete_response
+                                    for tag in ["response", "summary", "recommendations", "disclaimer", "follow_up_questions"]:
+                                        clean_response = clean_response.replace(f"<{tag}>", "").replace(f"</{tag}>", "")
+                                    response_parts["summary"] = clean_response.strip()
+                                
+                                # Send very simple done event with just the type and content
+                                # We'll include the structured response directly rather than trying to parse it
+                                yield f"data: {{\"type\": \"done\", \"content\": {json.dumps(complete_response)}}}\n\n"
+                            else:
+                                # Forward other message types
+                                yield f"data: {line}\n\n"
+                        except json.JSONDecodeError:
+                            logger.error(f"Invalid JSON in SSE data: {line}")
+                            continue
             except Exception:
                 logger.exception("Error in chat stream.")
                 yield "data: {\"type\": \"error\", \"message\": \"Failed to connect to backend API\"}\n\n"

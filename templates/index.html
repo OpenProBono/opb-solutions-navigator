@@ -299,7 +299,7 @@
                                 </div>
                                 <div id="locationFormContainer" class="d-none">
                                     <form id="locationForm" class="d-flex mt-1">
-                                        <input type="text" class="form-control form-control-sm me-2" id="locationInput" placeholder="Enter your actual location">
+                                        <input type="text" class="form-control form-control-sm me-2" id="locationInput" placeholder="Enter your city, state">
                                         <button class="btn btn-sm btn-primary" type="submit">Update</button>
                                     </form>
                                 </div>
@@ -450,7 +450,7 @@
                             <div class="mb-3">
                                 <label class="form-label">Price</label>
                                 <select id="price-filter" class="form-select">
-                                    <option value="">Any Price</option>
+                                    <option value="">Any</option>
                                     <option value="Free">Free</option>
                                     <option value="Subscription">Subscription</option>
                                     <option value="Contact for quote">Contact for quote</option>
@@ -554,6 +554,7 @@
             let currentSection = null;
             let sectionBuffer = '';
             let sectionElements = {};
+            const toolCallTimers = new Map(); // Stores { tool.id: { startTime, element } }
             
             // Load initial results
             loadResults();
@@ -722,7 +723,7 @@
                     }
 
                     const data = JSON.parse(event.data);
-                    if (data.type === 'solution_evaluation') {
+                    if (data.type === 'query_analysis') {
                         // Start timer only if not already started
                         if (!solutionStartTime) {
                             solutionStartTime = Date.now();
@@ -824,6 +825,39 @@
                         sectionBuffer += data.content || "";
                         parseAndRenderSections(sectionBuffer);
                         chatContainer.scrollTop = chatContainer.scrollHeight;
+                    } else if (data.type === 'tool_call') {
+                        const toolId = data.id;
+                        const loadingDiv = document.createElement('div');
+                        loadingDiv.className = 'assistant-message chat-message bg-light border border-primary-subtle mb-2';
+                        loadingDiv.innerHTML = `
+                            <div class="header-container d-flex align-items-center">
+                                <strong class="text-primary me-2">Searching, please wait...</strong>
+                                <div class="typing-indicator flex-shrink-0 ms-auto">
+                                    <span></span><span></span><span></span>
+                                </div>
+                            </div>
+                        `;
+                        chatContainer.appendChild(loadingDiv);
+                        chatContainer.scrollTop = chatContainer.scrollHeight;
+                        // Record start time and element
+                        toolCallTimers.set(toolId, {
+                            startTime: Date.now(),
+                            element: loadingDiv
+                        });
+                    } else if (data.type === 'tool_result') {
+                        const toolId = data.id;
+                        const timer = toolCallTimers.get(toolId);
+                        if (timer) {
+                            const { startTime, element } = timer;
+                            const duration = (Date.now() - startTime) / 1000; // in seconds
+                            element.querySelector('strong').textContent = `Searched for ${duration.toFixed(2)} seconds.`;
+                            // Remove typing indicator
+                            const typingIndicator = element.querySelector('.typing-indicator');
+                            if (typingIndicator) {
+                                typingIndicator.remove();
+                            }
+                            toolCallTimers.delete(toolId); // Clean up
+                        }
                     } else if (data.type === 'done') {
                         // Final clean-up of any leftover content
                         if (sectionBuffer) {
@@ -834,6 +868,14 @@
                         if (typeof safetyTimeout !== 'undefined') {
                             clearTimeout(safetyTimeout);
                         }
+
+                        // Clear all pending tool calls if error or session ends
+                        toolCallTimers.forEach(({ element }) => {
+                            if (element && element.parentNode) {
+                                element.remove();
+                            }
+                        });
+                        toolCallTimers.clear();
 
                         // Reset variables for next message
                         assistantContainer = null;
@@ -900,8 +942,6 @@
 
                 const el = sectionElements[currentSection];
                 const convertedMarkdown = marked.parse(text);
-                // const sanitizedText = escapeHtml(convertedMarkdown);
-                // const html = convertedMarkdown.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
 
                 // Replace loader with content
                 if (el.querySelector('.typing-indicator')) {
